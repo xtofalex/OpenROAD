@@ -33,6 +33,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include "grt/GlobalRouter.h"
+
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -56,7 +58,6 @@
 #include "db_sta/dbNetwork.hh"
 #include "db_sta/dbSta.hh"
 #include "grt/GRoute.h"
-#include "grt/GlobalRouter.h"
 #include "gui/gui.h"
 #include "heatMap.h"
 #include "odb/db.h"
@@ -135,8 +136,9 @@ void GlobalRouter::init(utl::Logger* logger,
 void GlobalRouter::clear()
 {
   routes_.clear();
-  for (auto net_itr : db_net_map_)
-    delete net_itr.second;
+  for (auto [ignored, net] : db_net_map_) {
+    delete net;
+  }
   db_net_map_.clear();
   routing_tracks_->clear();
   routing_layers_.clear();
@@ -151,8 +153,9 @@ GlobalRouter::~GlobalRouter()
   delete routing_tracks_;
   delete fastroute_;
   delete grid_;
-  for (auto net_itr : db_net_map_)
-    delete net_itr.second;
+  for (auto [ignored, net] : db_net_map_) {
+    delete net;
+  }
   delete repair_antennas_;
 }
 
@@ -498,10 +501,9 @@ void GlobalRouter::updateDirtyNets()
   }
 }
 
-std::vector<odb::Point> GlobalRouter::findOnGridPositions(
+bool GlobalRouter::pinAccessPointPositions(
     const Pin& pin,
-    bool& has_access_points,
-    odb::Point& pos_on_grid)
+    std::vector<std::pair<odb::Point, odb::Point>>& ap_positions)
 {
   std::vector<odb::dbAccessPoint*> access_points;
   // get APs from odb
@@ -522,21 +524,41 @@ std::vector<odb::Point> GlobalRouter::findOnGridPositions(
     }
   }
 
+  if (access_points.empty())
+    return false;
+
+  for (const odb::dbAccessPoint* ap : access_points) {
+    odb::Point ap_position = ap->getPoint();
+    if (!pin.isPort()) {
+      odb::dbTransform xform;
+      int x, y;
+      pin.getITerm()->getInst()->getLocation(x, y);
+      xform.setOffset({x, y});
+      xform.setOrient(odb::dbOrientType(odb::dbOrientType::R0));
+      xform.apply(ap_position);
+    }
+
+    ap_positions.push_back(
+        {ap_position, grid_->getPositionOnGrid(ap_position)});
+  }
+
+  return true;
+}
+
+std::vector<odb::Point> GlobalRouter::findOnGridPositions(
+    const Pin& pin,
+    bool& has_access_points,
+    odb::Point& pos_on_grid)
+{
+  std::vector<std::pair<odb::Point, odb::Point>> ap_positions;
+
+  has_access_points = pinAccessPointPositions(pin, ap_positions);
+
   std::vector<odb::Point> positions_on_grid;
-  has_access_points = !access_points.empty();
 
   if (has_access_points) {
-    for (const odb::dbAccessPoint* ap : access_points) {
-      odb::Point ap_position = ap->getPoint();
-      if (!pin.isPort()) {
-        odb::dbTransform xform;
-        int x, y;
-        pin.getITerm()->getInst()->getLocation(x, y);
-        xform.setOffset({x, y});
-        xform.setOrient(odb::dbOrientType(odb::dbOrientType::R0));
-        xform.apply(ap_position);
-      }
-      pos_on_grid = grid_->getPositionOnGrid(ap_position);
+    for (const auto& ap_position : ap_positions) {
+      pos_on_grid = ap_position.second;
       positions_on_grid.push_back(pos_on_grid);
     }
   } else {
@@ -678,9 +700,7 @@ void GlobalRouter::computeNetSlacks()
   }
 
   // Add the slack values smaller than the threshold to the nets
-  for (auto net_itr : net_slack_map) {
-    Net* net = net_itr.first;
-    float slack = net_itr.second;
+  for (auto [net, slack] : net_slack_map) {
     if (slack <= slack_th) {
       net->setSlack(slack);
     }
@@ -760,17 +780,16 @@ bool GlobalRouter::makeFastrouteNet(Net* net)
     int min_layer, max_layer;
     getNetLayerRange(net, min_layer, max_layer);
 
-    int netID = fastroute_->addNet(net->getDbNet(),
-                                   pins_on_grid.size(),
-                                   is_clock,
-                                   root_idx,
-                                   edge_cost_for_net,
-                                   min_layer - 1,
-                                   max_layer - 1,
-                                   net->getSlack(),
-                                   edge_cost_per_layer);
+    FrNet* fr_net = fastroute_->addNet(net->getDbNet(),
+                                       is_clock,
+                                       root_idx,
+                                       edge_cost_for_net,
+                                       min_layer - 1,
+                                       max_layer - 1,
+                                       net->getSlack(),
+                                       edge_cost_per_layer);
     for (RoutePt& pin_pos : pins_on_grid) {
-      fastroute_->addPin(netID, pin_pos.x(), pin_pos.y(), pin_pos.layer() - 1);
+      fr_net->addPin(pin_pos.x(), pin_pos.y(), pin_pos.layer() - 1);
     }
     // Save stt input on debug file
     if (fastroute_->hasSaveSttInput()
@@ -1380,7 +1399,13 @@ void GlobalRouter::perturbCapacities()
 
 void GlobalRouter::readGuides(const char* file_name)
 {
+  if (db_->getChip() == nullptr || db_->getChip()->getBlock() == nullptr
+      || db_->getTech() == nullptr) {
+    logger_->error(GRT, 249, "Load design before reading guides");
+  }
+
   block_ = db_->getChip()->getBlock();
+  routes_.clear();
   if (max_routing_layer_ == -1 || routing_layers_.empty()) {
     max_routing_layer_ = computeMaxRoutingLayer();
     int min_layer = min_layer_for_clock_ > 0
@@ -1409,6 +1434,7 @@ void GlobalRouter::readGuides(const char* file_name)
     logger_->error(GRT, 233, "Failed to open guide file {}.", file_name);
   }
 
+  bool skip = false;
   while (fin.good()) {
     getline(fin, line);
     if (line == "(" || line == "" || line == ")") {
@@ -1428,7 +1454,22 @@ void GlobalRouter::readGuides(const char* file_name)
       if (!net) {
         logger_->error(GRT, 234, "Cannot find net {}.", tokens[0]);
       }
+      skip = false;
     } else if (tokens.size() == 5) {
+      if (skip) {
+        continue;
+      }
+
+      if (db_net_map_.find(net) == db_net_map_.end()) {
+        logger_->warn(GRT,
+                      250,
+                      "Net {} has guides but is not routed by the global "
+                      "router and will be skipped.",
+                      net->getName());
+        skip = true;
+        continue;
+      }
+
       auto layer = tech->findLayer(tokens[4].c_str());
       if (!layer) {
         logger_->error(GRT, 235, "Cannot find layer {}.", tokens[4]);
@@ -2188,8 +2229,7 @@ void GlobalRouter::initAdjustments()
 std::vector<Pin*> GlobalRouter::getAllPorts()
 {
   std::vector<Pin*> ports;
-  for (auto net_itr : db_net_map_) {
-    Net* net = net_itr.second;
+  for (auto [ignored, net] : db_net_map_) {
     for (Pin& pin : net->getPins()) {
       if (pin.isPort()) {
         ports.push_back(&pin);
@@ -2566,8 +2606,7 @@ std::vector<Net*> GlobalRouter::initNetlist()
     }
   }
 
-  for (auto net_itr : db_net_map_) {
-    Net* net = net_itr.second;
+  for (auto [ignored, net] : db_net_map_) {
     bool is_non_leaf_clock = isNonLeafClock(net->getDbNet());
     if (!is_non_leaf_clock) {
       nets.push_back(net);
@@ -3054,13 +3093,13 @@ int GlobalRouter::findInstancesObstructions(
     }
 
     for (odb::dbMTerm* mterm : master->getMTerms()) {
-      for (odb::dbMPin* mterm : mterm->getMPins()) {
+      for (odb::dbMPin* mpin : mterm->getMPins()) {
         odb::Point lower_bound;
         odb::Point upper_bound;
         odb::Rect pin_box;
         int pin_layer;
 
-        for (odb::dbBox* box : mterm->getGeometry()) {
+        for (odb::dbBox* box : mpin->getGeometry()) {
           odb::Rect rect = box->getBox();
           transform.apply(rect);
 
@@ -3078,7 +3117,8 @@ int GlobalRouter::findInstancesObstructions(
             if (!die_area.contains(pin_box)) {
               logger_->error(GRT,
                              39,
-                             "Found pin outside die area in instance {}.",
+                             "Found pin {} outside die area in instance {}.",
+                             mterm->getConstName(),
                              inst->getConstName());
               pin_out_of_die_count++;
             }

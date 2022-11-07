@@ -966,7 +966,7 @@ void io::Parser::setAccessPoints(odb::dbDatabase* db)
       for (auto db_pin : db_pins) {
         auto& pin = pins[i++];
         auto db_pas = db_pin->getPinAccess();
-        for (auto db_aps : db_pas) {
+        for (const auto& db_aps : db_pas) {
           std::unique_ptr<frPinAccess> pa = make_unique<frPinAccess>();
           for (auto db_ap : db_aps) {
             std::unique_ptr<frAccessPoint> ap = make_unique<frAccessPoint>();
@@ -1917,6 +1917,16 @@ void io::Parser::setLayers(odb::dbTech* db_tech)
       default:
         break;
     }
+  }
+  // MetalWidthViaMap
+  for (auto rule : db_tech->getMetalWidthViaMap()) {
+    auto db_layer = rule->getCutLayer();
+    auto layer = tech_->getLayer(db_layer->getName());
+    if (layer == nullptr)
+      continue;
+    auto uCon = std::make_unique<frMetalWidthViaConstraint>(rule);
+    layer->addMetalWidthViaConstraint(uCon.get());
+    tech_->addUConstraint(std::move(uCon));
   }
 }
 

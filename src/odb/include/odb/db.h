@@ -938,13 +938,13 @@ class dbBlock : public dbObject
   /// and helper functions for global connections
   /// on this block.
   ///
-  void globalConnect();
-  void globalConnect(dbGlobalConnect* gc);
-  void addGlobalConnect(dbRegion* region,
-                        const char* instPattern,
-                        const char* pinPattern,
-                        dbNet* net,
-                        bool do_connect);
+  int globalConnect();
+  int globalConnect(dbGlobalConnect* gc);
+  int addGlobalConnect(dbRegion* region,
+                       const char* instPattern,
+                       const char* pinPattern,
+                       dbNet* net,
+                       bool do_connect);
   void reportGlobalConnect();
   void clearGlobalConnect();
 
@@ -9385,7 +9385,7 @@ class dbGlobalConnect : public dbObject
   // User Code Begin dbGlobalConnect
   std::vector<dbInst*> getInsts() const;
 
-  void connect(dbInst* inst);
+  int connect(dbInst* inst);
 
   static dbGlobalConnect* create(dbNet* net,
                                  dbRegion* region,
