@@ -110,6 +110,7 @@ add_library(db
     dbMetalWidthViaMap.cpp
     dbTechLayerAreaRule.cpp
     dbModule.cpp
+    dbModTerm.cpp
     dbModInst.cpp
     dbGroup.cpp
     dbGCellGrid.cpp

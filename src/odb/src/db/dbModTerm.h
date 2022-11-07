@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // BSD 3-Clause License
 //
-// Copyright (c) 2020, The Regents of the University of California
+// Copyright (c) 2022, The Regents of the University of California
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,6 @@
 #include "odb.h"
 
 // User Code Begin Includes
-#include "dbHashTable.h"
 // User Code End Includes
 
 namespace odb {
@@ -46,47 +45,41 @@ class dbIStream;
 class dbOStream;
 class dbDiff;
 class _dbDatabase;
-class _dbInst;
-class _dbModTerm;
-class _dbModInst;
+class _dbModule;
 // User Code Begin Classes
 // User Code End Classes
 
 // User Code Begin Structs
 // User Code End Structs
 
-class _dbModule : public _dbObject
+class _dbModTerm : public _dbObject
 {
  public:
   // User Code Begin Enums
   // User Code End Enums
 
   char* _name;
-  dbId<_dbModule> _next_entry;
-  dbId<_dbInst> _insts;
-  dbId<_dbModTerm> _modterms;
-  dbId<_dbModInst> _modinsts;
-  dbId<_dbModInst> _mod_inst;
+  dbId<_dbModTerm> _next_entry;
+  dbId<_dbModule> _parent;
+  dbId<_dbModTerm> _module_next;
 
   // User Code Begin Fields
   // User Code End Fields
-  _dbModule(_dbDatabase*, const _dbModule& r);
-  _dbModule(_dbDatabase*);
-  ~_dbModule();
-  bool operator==(const _dbModule& rhs) const;
-  bool operator!=(const _dbModule& rhs) const { return !operator==(rhs); }
-  bool operator<(const _dbModule& rhs) const;
-  void differences(dbDiff& diff, const char* field, const _dbModule& rhs) const;
+  _dbModTerm(_dbDatabase*, const _dbModTerm& r);
+  _dbModTerm(_dbDatabase*);
+  ~_dbModTerm();
+  bool operator==(const _dbModTerm& rhs) const;
+  bool operator!=(const _dbModTerm& rhs) const { return !operator==(rhs); }
+  bool operator<(const _dbModTerm& rhs) const;
+  void differences(dbDiff& diff,
+                   const char* field,
+                   const _dbModTerm& rhs) const;
   void out(dbDiff& diff, char side, const char* field) const;
   // User Code Begin Methods
-
-  // This is only used when destroying an inst
-  void removeInst(dbInst* inst);
-
   // User Code End Methods
 };
-dbIStream& operator>>(dbIStream& stream, _dbModule& obj);
-dbOStream& operator<<(dbOStream& stream, const _dbModule& obj);
+dbIStream& operator>>(dbIStream& stream, _dbModTerm& obj);
+dbOStream& operator<<(dbOStream& stream, const _dbModTerm& obj);
 // User Code Begin General
 // User Code End General
 }  // namespace odb

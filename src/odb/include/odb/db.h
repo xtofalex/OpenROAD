@@ -144,6 +144,7 @@ class dbGuide;
 class dbMetalWidthViaMap;
 class dbTechLayerAreaRule;
 class dbModule;
+class dbModTerm;
 class dbModInst;
 class dbGroup;
 class dbGCellGrid;
@@ -3328,13 +3329,13 @@ class dbITerm : public dbObject
 
   ///
   /// True is iterm is input of signal type; if io false INOUT is not considered
-  /// iput
+  /// input
   ///
   bool isInputSignal(bool io = true);
 
   ///
   /// True is iterm is output of signal type; if io false INOUT is not
-  /// considered iput
+  /// considered input
   ///
   bool isOutputSignal(bool io = true);
 
@@ -9027,6 +9028,20 @@ class dbModule : public dbObject
 
   std::string getHierarchicalName() const;
   // User Code End dbModule
+};
+
+class dbModTerm : public dbObject
+{
+ public:
+  // User Code Begin dbModTermEnums
+  // User Code End dbModTermEnums
+
+  dbModule* getParent() const;
+
+  // User Code Begin dbModTerm
+  static dbModTerm* create(dbModule* module, const char* name, dbIoType io_type);
+
+  // User Code End dbModTerm
 };
 
 class dbModInst : public dbObject
