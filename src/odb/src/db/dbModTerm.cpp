@@ -62,6 +62,8 @@ bool _dbModTerm::operator==(const _dbModTerm& rhs) const
     return false;
 
   // User Code Begin ==
+  if (_flags._io_type != rhs._flags._io_type)
+    return false;
   // User Code End ==
   return true;
 }
@@ -82,6 +84,7 @@ void _dbModTerm::differences(dbDiff& diff,
   DIFF_FIELD(_parent);
   DIFF_FIELD(_module_next);
   // User Code Begin Differences
+  DIFF_FIELD(_flags._io_type);
   // User Code End Differences
   DIFF_END
 }
@@ -94,12 +97,14 @@ void _dbModTerm::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_FIELD(_module_next);
 
   // User Code Begin Out
+  DIFF_OUT_FIELD(_flags._io_type);
   // User Code End Out
   DIFF_END
 }
 _dbModTerm::_dbModTerm(_dbDatabase* db)
 {
   // User Code Begin Constructor
+  _flags._io_type = dbIoType::INPUT;
   // User Code End Constructor
 }
 _dbModTerm::_dbModTerm(_dbDatabase* db, const _dbModTerm& r)
@@ -119,6 +124,8 @@ dbIStream& operator>>(dbIStream& stream, _dbModTerm& obj)
   stream >> obj._parent;
   stream >> obj._module_next;
   // User Code Begin >>
+  uint* bit_field = (uint*) &obj._flags;
+  stream >> *bit_field;
   // User Code End >>
   return stream;
 }
@@ -129,6 +136,8 @@ dbOStream& operator<<(dbOStream& stream, const _dbModTerm& obj)
   stream << obj._parent;
   stream << obj._module_next;
   // User Code Begin <<
+  uint* bit_field = (uint*) &obj._flags;
+  stream << *bit_field;
   // User Code End <<
   return stream;
 }
@@ -176,6 +185,13 @@ dbModTerm* dbModTerm::create(dbModule* parentModule,
   parent->_modterms = modterm->getOID();
   block->_modterm_hash.insert(modterm);
   return (dbModTerm*) modterm;
+}
+
+
+dbIoType dbModTerm::getIoType()
+{
+  _dbModTerm* mterm = (_dbModTerm*) this;
+  return dbIoType(mterm->_flags._io_type);
 }
 
 // User Code End dbModTermPublicMethods

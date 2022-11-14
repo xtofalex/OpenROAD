@@ -50,6 +50,12 @@ class _dbModule;
 // User Code End Classes
 
 // User Code Begin Structs
+
+struct _dbModTermFlags
+{
+  dbIoType::Value _io_type : 4;
+};
+
 // User Code End Structs
 
 class _dbModTerm : public _dbObject
@@ -59,6 +65,7 @@ class _dbModTerm : public _dbObject
   // User Code End Enums
 
   char* _name;
+  _dbModTermFlags _flags;
   dbId<_dbModTerm> _next_entry;
   dbId<_dbModule> _parent;
   dbId<_dbModTerm> _module_next;

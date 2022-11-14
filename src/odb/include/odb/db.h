@@ -9039,7 +9039,12 @@ class dbModTerm : public dbObject
   dbModule* getParent() const;
 
   // User Code Begin dbModTerm
-  static dbModTerm* create(dbModule* module, const char* name, dbIoType io_type);
+  static dbModTerm* create(dbModule* module, const char* name);
+
+  ///
+  /// Get the IO direction of this module-terminal.
+  ///
+  dbIoType getIoType();
 
   // User Code End dbModTerm
 };

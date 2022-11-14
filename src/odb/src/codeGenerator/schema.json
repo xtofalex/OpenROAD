@@ -101,13 +101,13 @@
       "type":"dbObject",
       "fields":[
         {
-          "name":"_flags",
-          "type":"dbModTermFlags",
-          "flags":["no-set"]
-        },
-        {
           "name":"_name",
           "type":"char *",
+          "flags":["no-set","no-get"]
+        },
+        {
+          "name":"_flags",
+          "type":"_dbModTermFlags",
           "flags":["no-set","no-get"]
         },
         {
