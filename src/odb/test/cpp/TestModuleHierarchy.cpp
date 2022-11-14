@@ -37,6 +37,12 @@ BOOST_FIXTURE_TEST_CASE(test_default,F_DEFAULT)
   //dbModule::getName()
   BOOST_TEST(string(parent_mod->getName())=="parent_mod");
   //dbModInst::create() Succeed
+
+  dbModTerm* i0_term = dbModTerm::create(master_mod, "i0");
+  BOOST_TEST(i0_term!=nullptr);
+  BOOST_TEST(string(i0_term->getName())=="parent_mod");
+
+
   BOOST_TEST(dbModInst::create(parent_mod,master_mod,"i1")!=nullptr);
   //dbModInst::create() rejected duplicate name
   BOOST_TEST(dbModInst::create(parent_mod,master_mod,"i1")==nullptr);
