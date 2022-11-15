@@ -145,6 +145,7 @@ class dbMetalWidthViaMap;
 class dbTechLayerAreaRule;
 class dbModule;
 class dbModTerm;
+class dbModNet;
 class dbModInst;
 class dbGroup;
 class dbGCellGrid;
@@ -177,7 +178,7 @@ class dbProperty : public dbObject
   /// Get the type of this property.
   Type getType();
 
-  /// Get thetname of this property.
+  /// Get the name of this property.
   std::string getName();
 
   /// Get the owner of this property
@@ -9039,14 +9040,40 @@ class dbModTerm : public dbObject
   dbModule* getParent() const;
 
   // User Code Begin dbModTerm
-  static dbModTerm* create(dbModule* module, const char* name);
+  static dbModTerm* create(dbModule* module,
+                           const char* name,
+                           dbIoType direction);
+
+  ///
+  /// Get the dbModTerm name.
+  ///
+  std::string getName() const;
 
   ///
   /// Get the IO direction of this module-terminal.
   ///
-  dbIoType getIoType();
+  dbIoType getIoType() const;
 
   // User Code End dbModTerm
+};
+
+class dbModNet : public dbObject
+{
+ public:
+  // User Code Begin dbModNetEnums
+  // User Code End dbModNetEnums
+
+  dbModule* getParent() const;
+
+  // User Code Begin dbModNet
+  static dbModNet* create(dbModule* module, const char* name);
+
+  ///
+  /// Get the dbModNet name.
+  ///
+  std::string getName() const;
+
+  // User Code End dbModNet
 };
 
 class dbModInst : public dbObject

@@ -67,6 +67,9 @@ bool _dbModule::operator==(const _dbModule& rhs) const
   if (_modterms != rhs._modterms)
     return false;
 
+  if (_modnets != rhs._modnets)
+    return false;
+
   if (_modinsts != rhs._modinsts)
     return false;
 
@@ -95,6 +98,7 @@ void _dbModule::differences(dbDiff& diff,
   DIFF_FIELD(_next_entry);
   DIFF_FIELD(_insts);
   DIFF_FIELD(_modterms);
+  DIFF_FIELD(_modnets);
   DIFF_FIELD(_modinsts);
   DIFF_FIELD(_mod_inst);
   // User Code Begin Differences
@@ -108,6 +112,7 @@ void _dbModule::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_FIELD(_next_entry);
   DIFF_OUT_FIELD(_insts);
   DIFF_OUT_FIELD(_modterms);
+  DIFF_OUT_FIELD(_modnets);
   DIFF_OUT_FIELD(_modinsts);
   DIFF_OUT_FIELD(_mod_inst);
 
@@ -131,6 +136,7 @@ _dbModule::_dbModule(_dbDatabase* db, const _dbModule& r)
   _next_entry = r._next_entry;
   _insts = r._insts;
   _modterms = r._modterms;
+  _modnets = r._modnets;
   _modinsts = r._modinsts;
   _mod_inst = r._mod_inst;
   // User Code Begin CopyConstructor
@@ -143,6 +149,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModule& obj)
   stream >> obj._next_entry;
   stream >> obj._insts;
   stream >> obj._modterms;
+  stream >> obj._modnets;
   stream >> obj._modinsts;
   stream >> obj._mod_inst;
   // User Code Begin >>
@@ -155,6 +162,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbModule& obj)
   stream << obj._next_entry;
   stream << obj._insts;
   stream << obj._modterms;
+  stream << obj._modnets;
   stream << obj._modinsts;
   stream << obj._mod_inst;
   // User Code Begin <<

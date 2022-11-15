@@ -31,7 +31,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 // Generator Code Begin Cpp
-#include "dbModTerm.h"
+#include "dbModNet.h"
 
 #include "db.h"
 #include "dbBlock.h"
@@ -45,9 +45,9 @@
 // User Code End Includes
 namespace odb {
 
-template class dbTable<_dbModTerm>;
+template class dbTable<_dbModNet>;
 
-bool _dbModTerm::operator==(const _dbModTerm& rhs) const
+bool _dbModNet::operator==(const _dbModNet& rhs) const
 {
   if (_name != rhs._name)
     return false;
@@ -62,12 +62,10 @@ bool _dbModTerm::operator==(const _dbModTerm& rhs) const
     return false;
 
   // User Code Begin ==
-  if (_flags._io_type != rhs._flags._io_type)
-    return false;
   // User Code End ==
   return true;
 }
-bool _dbModTerm::operator<(const _dbModTerm& rhs) const
+bool _dbModNet::operator<(const _dbModNet& rhs) const
 {
   // User Code Begin <
   if (strcmp(_name, rhs._name) >= 0)
@@ -75,9 +73,9 @@ bool _dbModTerm::operator<(const _dbModTerm& rhs) const
   // User Code End <
   return true;
 }
-void _dbModTerm::differences(dbDiff& diff,
-                             const char* field,
-                             const _dbModTerm& rhs) const
+void _dbModNet::differences(dbDiff& diff,
+                            const char* field,
+                            const _dbModNet& rhs) const
 {
   DIFF_BEGIN
 
@@ -86,11 +84,10 @@ void _dbModTerm::differences(dbDiff& diff,
   DIFF_FIELD(_parent);
   DIFF_FIELD(_module_next);
   // User Code Begin Differences
-  DIFF_FIELD(_flags._io_type);
   // User Code End Differences
   DIFF_END
 }
-void _dbModTerm::out(dbDiff& diff, char side, const char* field) const
+void _dbModNet::out(dbDiff& diff, char side, const char* field) const
 {
   DIFF_OUT_BEGIN
   DIFF_OUT_FIELD(_name);
@@ -99,57 +96,50 @@ void _dbModTerm::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_FIELD(_module_next);
 
   // User Code Begin Out
-  DIFF_OUT_FIELD(_flags._io_type);
   // User Code End Out
   DIFF_END
 }
-_dbModTerm::_dbModTerm(_dbDatabase* db)
+_dbModNet::_dbModNet(_dbDatabase* db)
 {
   // User Code Begin Constructor
   _name = 0;
   _next_entry = 0;
   _parent = 0;
   _module_next = 0;
-  _flags._io_type = dbIoType::INPUT;
   // User Code End Constructor
 }
-_dbModTerm::_dbModTerm(_dbDatabase* db, const _dbModTerm& r)
+_dbModNet::_dbModNet(_dbDatabase* db, const _dbModNet& r)
 {
   _name = r._name;
   _next_entry = r._next_entry;
   _parent = r._parent;
   _module_next = r._module_next;
   // User Code Begin CopyConstructor
-  _flags._io_type = r._flags._io_type;
   // User Code End CopyConstructor
 }
 
-dbIStream& operator>>(dbIStream& stream, _dbModTerm& obj)
+dbIStream& operator>>(dbIStream& stream, _dbModNet& obj)
 {
   stream >> obj._name;
   stream >> obj._next_entry;
   stream >> obj._parent;
   stream >> obj._module_next;
   // User Code Begin >>
-  uint* bit_field = (uint*) &obj._flags;
-  stream >> *bit_field;
   // User Code End >>
   return stream;
 }
-dbOStream& operator<<(dbOStream& stream, const _dbModTerm& obj)
+dbOStream& operator<<(dbOStream& stream, const _dbModNet& obj)
 {
   stream << obj._name;
   stream << obj._next_entry;
   stream << obj._parent;
   stream << obj._module_next;
   // User Code Begin <<
-  uint* bit_field = (uint*) &obj._flags;
-  stream << *bit_field;
   // User Code End <<
   return stream;
 }
 
-_dbModTerm::~_dbModTerm()
+_dbModNet::~_dbModNet()
 {
   if (_name)
     free((void*) _name);
@@ -162,54 +152,46 @@ _dbModTerm::~_dbModTerm()
 
 ////////////////////////////////////////////////////////////////////
 //
-// dbModTerm - Methods
+// dbModNet - Methods
 //
 ////////////////////////////////////////////////////////////////////
 
-dbModule* dbModTerm::getParent() const
+dbModule* dbModNet::getParent() const
 {
-  _dbModTerm* obj = (_dbModTerm*) this;
+  _dbModNet* obj = (_dbModNet*) this;
   if (obj->_parent == 0)
     return NULL;
   _dbBlock* par = (_dbBlock*) obj->getOwner();
   return (dbModule*) par->_module_tbl->getPtr(obj->_parent);
 }
 
-// User Code Begin dbModTermPublicMethods
-dbModTerm* dbModTerm::create(dbModule* parentModule,
-                             const char* name,
-                             dbIoType ioType)
+// User Code Begin dbModNetPublicMethods
+dbModNet* dbModNet::create(dbModule* parentModule,
+                             const char* name)
 {
   _dbModule* parent = (_dbModule*) parentModule;
   _dbBlock* block = (_dbBlock*) parent->getOwner();
   std::string h_name = std::string(parent->_name) + '/' + std::string(name);
-  if (block->_modterm_hash.hasMember(h_name.c_str()))
+  if (block->_modnet_hash.hasMember(h_name.c_str()))
     return nullptr;
-  _dbModTerm* modterm = block->_modterm_tbl->create();
-  modterm->_name = strdup(h_name.c_str());
-  ZALLOCATED(modterm->_name);
-  modterm->_flags._io_type = ioType;
-  modterm->_parent = parent->getOID();
-  modterm->_module_next = parent->_modterms;
-  parent->_modterms = modterm->getOID();
-  block->_modterm_hash.insert(modterm);
-  return (dbModTerm*) modterm;
+  _dbModNet* modnet = block->_modnet_tbl->create();
+  modnet->_name = strdup(h_name.c_str());
+  ZALLOCATED(modnet->_name);
+  modnet->_parent = parent->getOID();
+  modnet->_module_next = parent->_modnets;
+  parent->_modnets = modnet->getOID();
+  block->_modnet_hash.insert(modnet);
+  return (dbModNet*) modnet;
 }
 
-std::string dbModTerm::getName() const
+std::string dbModNet::getName() const
 {
-  _dbModTerm* obj = (_dbModTerm*) this;
+  _dbModNet* obj = (_dbModNet*) this;
   std::string h_name = std::string(obj->_name);
   size_t idx = h_name.find_last_of('/');
   return h_name.substr(idx + 1);
 }
 
-dbIoType dbModTerm::getIoType() const
-{
-  _dbModTerm* mterm = (_dbModTerm*) this;
-  return dbIoType(mterm->_flags._io_type);
-}
-
-// User Code End dbModTermPublicMethods
+// User Code End dbModNetPublicMethods
 }  // namespace odb
    // Generator Code End Cpp

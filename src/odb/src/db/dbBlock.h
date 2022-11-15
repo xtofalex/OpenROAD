@@ -94,6 +94,7 @@ class _dbLogicPort;
 class _dbPowerSwitch;
 class _dbIsolation;
 class _dbModTerm;
+class _dbModNet;
 class _dbModInst;
 class _dbGroup;
 class _dbAccessPoint;
@@ -184,6 +185,7 @@ class _dbBlock : public _dbObject
   dbHashTable<_dbInst> _inst_hash;
   dbHashTable<_dbModule> _module_hash;
   dbHashTable<_dbModTerm> _modterm_hash;
+  dbHashTable<_dbModNet> _modnet_hash;
   dbHashTable<_dbModInst> _modinst_hash;
   dbHashTable<_dbPowerDomain> _powerdomain_hash;
   dbHashTable<_dbLogicPort> _logicport_hash;
@@ -229,6 +231,7 @@ class _dbBlock : public _dbObject
   dbTable<_dbPowerSwitch>* _powerswitch_tbl;
   dbTable<_dbIsolation>* _isolation_tbl;
   dbTable<_dbModTerm>* _modterm_tbl;
+  dbTable<_dbModNet>* _modnet_tbl;
   dbTable<_dbModInst>* _modinst_tbl;
   dbTable<_dbGroup>* _group_tbl;
   dbTable<_dbAccessPoint>* ap_tbl_;

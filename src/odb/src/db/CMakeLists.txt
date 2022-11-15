@@ -111,6 +111,7 @@ add_library(db
     dbTechLayerAreaRule.cpp
     dbModule.cpp
     dbModTerm.cpp
+    dbModNet.cpp
     dbModInst.cpp
     dbGroup.cpp
     dbGCellGrid.cpp

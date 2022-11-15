@@ -84,6 +84,8 @@
 #include "dbIsolation.h"
 #include "dbJournal.h"
 #include "dbLogicPort.h"
+#include "dbModTerm.h"
+#include "dbModNet.h"
 #include "dbModInst.h"
 #include "dbModule.h"
 #include "dbModuleInstItr.h"
@@ -191,6 +193,12 @@ _dbBlock::_dbBlock(_dbDatabase* db)
 
   _module_tbl = new dbTable<_dbModule>(
       db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbModuleObj);
+
+  _modterm_tbl = new dbTable<_dbModTerm>(
+      db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbModTermObj);
+
+  _modnet_tbl = new dbTable<_dbModNet>(
+      db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbModNetObj);
 
   _modinst_tbl = new dbTable<_dbModInst>(
       db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbModInstObj);
@@ -315,6 +323,8 @@ _dbBlock::_dbBlock(_dbDatabase* db)
   _net_hash.setTable(_net_tbl);
   _inst_hash.setTable(_inst_tbl);
   _module_hash.setTable(_module_tbl);
+  _modterm_hash.setTable(_modterm_tbl);
+  _modnet_hash.setTable(_modnet_tbl);
   _modinst_hash.setTable(_modinst_tbl);
   _powerdomain_hash.setTable(_powerdomain_tbl);
   _logicport_hash.setTable(_logicport_tbl);
@@ -432,6 +442,10 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
 
   _module_tbl = new dbTable<_dbModule>(db, this, *block._module_tbl);
 
+  _modterm_tbl = new dbTable<_dbModTerm>(db, this, *block._modterm_tbl);
+
+  _modnet_tbl = new dbTable<_dbModNet>(db, this, *block._modnet_tbl);
+  
   _modinst_tbl = new dbTable<_dbModInst>(db, this, *block._modinst_tbl);
 
   _powerdomain_tbl
@@ -509,6 +523,7 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
   _net_hash.setTable(_net_tbl);
   _inst_hash.setTable(_inst_tbl);
   _module_hash.setTable(_module_tbl);
+  _modterm_hash.setTable(_modterm_tbl);
   _modinst_hash.setTable(_modinst_tbl);
   _group_hash.setTable(_group_tbl);
   _inst_hdr_hash.setTable(_inst_hdr_tbl);
@@ -587,6 +602,8 @@ _dbBlock::~_dbBlock()
   delete _inst_hdr_tbl;
   delete _inst_tbl;
   delete _module_tbl;
+  delete _modterm_tbl;
+  delete _modnet_tbl;
   delete _modinst_tbl;
   delete _powerdomain_tbl;
   delete _logicport_tbl;
@@ -746,6 +763,12 @@ dbObjectTable* _dbBlock::getObjectTable(dbObjectType type)
 
     case dbModuleObj:
       return _module_tbl;
+
+    case dbModTermObj:
+      return _modterm_tbl;
+
+    case dbModNetObj:
+      return _modnet_tbl;
 
     case dbModInstObj:
       return _modinst_tbl;
@@ -910,6 +933,8 @@ dbOStream& operator<<(dbOStream& stream, const _dbBlock& block)
   stream << *block._inst_hdr_tbl;
   stream << *block._inst_tbl;
   stream << *block._module_tbl;
+  stream << *block._modterm_tbl;
+  stream << *block._modnet_tbl;
   stream << *block._modinst_tbl;
   stream << *block._powerdomain_tbl;
   stream << *block._logicport_tbl;
@@ -1007,6 +1032,8 @@ dbIStream& operator>>(dbIStream& stream, _dbBlock& block)
   stream >> *block._inst_hdr_tbl;
   stream >> *block._inst_tbl;
   stream >> *block._module_tbl;
+  stream >> *block._modterm_tbl;
+  stream >> *block._modnet_tbl;
   stream >> *block._modinst_tbl;
   stream >> *block._powerdomain_tbl;
   stream >> *block._logicport_tbl;
@@ -1221,6 +1248,12 @@ bool _dbBlock::operator==(const _dbBlock& rhs) const
   if (*_module_tbl != *rhs._module_tbl)
     return false;
 
+  if (*_modterm_tbl != *rhs._modterm_tbl)
+    return false;
+
+  if (*_modnet_tbl != *rhs._modnet_tbl)
+    return false;
+
   if (*_modinst_tbl != *rhs._modinst_tbl)
     return false;
 
@@ -1372,6 +1405,8 @@ void _dbBlock::differences(dbDiff& diff,
   DIFF_TABLE_NO_DEEP(_inst_hdr_tbl);
   DIFF_TABLE(_inst_tbl);
   DIFF_TABLE(_module_tbl);
+  DIFF_TABLE(_modterm_tbl);
+  DIFF_TABLE(_modnet_tbl);
   DIFF_TABLE(_modinst_tbl);
   DIFF_TABLE(_powerdomain_tbl);
   DIFF_TABLE(_logicport_tbl);
@@ -1465,6 +1500,8 @@ void _dbBlock::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_TABLE_NO_DEEP(_inst_hdr_tbl);
   DIFF_OUT_TABLE(_inst_tbl);
   DIFF_OUT_TABLE(_module_tbl);
+  DIFF_OUT_TABLE(_modterm_tbl);
+  DIFF_OUT_TABLE(_modnet_tbl);
   DIFF_OUT_TABLE(_modinst_tbl);
   DIFF_OUT_TABLE(_powerdomain_tbl);
   DIFF_OUT_TABLE(_logicport_tbl);
