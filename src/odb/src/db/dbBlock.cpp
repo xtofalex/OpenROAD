@@ -84,9 +84,9 @@
 #include "dbIsolation.h"
 #include "dbJournal.h"
 #include "dbLogicPort.h"
-#include "dbModInst.h"
-#include "dbModNet.h"
 #include "dbModTerm.h"
+#include "dbModNet.h"
+#include "dbModInst.h"
 #include "dbModule.h"
 #include "dbModuleInstItr.h"
 #include "dbModuleModInstItr.h"
@@ -445,7 +445,7 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
   _modterm_tbl = new dbTable<_dbModTerm>(db, this, *block._modterm_tbl);
 
   _modnet_tbl = new dbTable<_dbModNet>(db, this, *block._modnet_tbl);
-
+  
   _modinst_tbl = new dbTable<_dbModInst>(db, this, *block._modinst_tbl);
 
   _powerdomain_tbl

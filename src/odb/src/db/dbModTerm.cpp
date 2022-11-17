@@ -231,12 +231,10 @@ dbModNet* dbModTerm::getNet()
     return nullptr;
 }
 
-void dbModTerm::disconnect()
-{
+void dbModTerm::disconnect() {
 }
 
-void dbModTerm::connect(dbModNet* net)
-{
+void dbModTerm::connect(dbModNet* net) {
 }
 
 // User Code End dbModTermPublicMethods
