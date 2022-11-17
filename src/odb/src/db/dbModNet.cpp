@@ -166,8 +166,7 @@ dbModule* dbModNet::getParent() const
 }
 
 // User Code Begin dbModNetPublicMethods
-dbModNet* dbModNet::create(dbModule* parentModule,
-                             const char* name)
+dbModNet* dbModNet::create(dbModule* parentModule, const char* name)
 {
   _dbModule* parent = (_dbModule*) parentModule;
   _dbBlock* block = (_dbBlock*) parent->getOwner();

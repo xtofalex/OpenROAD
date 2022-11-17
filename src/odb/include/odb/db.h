@@ -9054,6 +9054,18 @@ class dbModTerm : public dbObject
   ///
   dbIoType getIoType() const;
 
+  /// Get the net of this terminal.
+  ///
+  dbModNet* getNet();
+
+  /// Disconnect the terminal from it's net.
+  ///
+  void disconnect();
+
+  /// Connect the terminal to net.
+  ///
+  void connect(dbModNet* net);
+
   // User Code End dbModTerm
 };
 
@@ -9072,7 +9084,6 @@ class dbModNet : public dbObject
   /// Get the dbModNet name.
   ///
   std::string getName() const;
-
   // User Code End dbModNet
 };
 

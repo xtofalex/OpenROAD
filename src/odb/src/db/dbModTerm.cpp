@@ -42,6 +42,7 @@
 #include "dbTable.h"
 #include "dbTable.hpp"
 // User Code Begin Includes
+#include "dbModNet.h"
 // User Code End Includes
 namespace odb {
 
@@ -50,6 +51,9 @@ template class dbTable<_dbModTerm>;
 bool _dbModTerm::operator==(const _dbModTerm& rhs) const
 {
   if (_name != rhs._name)
+    return false;
+
+  if (_net != rhs._net)
     return false;
 
   if (_next_entry != rhs._next_entry)
@@ -82,6 +86,7 @@ void _dbModTerm::differences(dbDiff& diff,
   DIFF_BEGIN
 
   DIFF_FIELD(_name);
+  DIFF_FIELD(_net);
   DIFF_FIELD(_next_entry);
   DIFF_FIELD(_parent);
   DIFF_FIELD(_module_next);
@@ -94,6 +99,7 @@ void _dbModTerm::out(dbDiff& diff, char side, const char* field) const
 {
   DIFF_OUT_BEGIN
   DIFF_OUT_FIELD(_name);
+  DIFF_OUT_FIELD(_net);
   DIFF_OUT_FIELD(_next_entry);
   DIFF_OUT_FIELD(_parent);
   DIFF_OUT_FIELD(_module_next);
@@ -116,6 +122,7 @@ _dbModTerm::_dbModTerm(_dbDatabase* db)
 _dbModTerm::_dbModTerm(_dbDatabase* db, const _dbModTerm& r)
 {
   _name = r._name;
+  _net = r._net;
   _next_entry = r._next_entry;
   _parent = r._parent;
   _module_next = r._module_next;
@@ -127,6 +134,7 @@ _dbModTerm::_dbModTerm(_dbDatabase* db, const _dbModTerm& r)
 dbIStream& operator>>(dbIStream& stream, _dbModTerm& obj)
 {
   stream >> obj._name;
+  stream >> obj._net;
   stream >> obj._next_entry;
   stream >> obj._parent;
   stream >> obj._module_next;
@@ -139,6 +147,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModTerm& obj)
 dbOStream& operator<<(dbOStream& stream, const _dbModTerm& obj)
 {
   stream << obj._name;
+  stream << obj._net;
   stream << obj._next_entry;
   stream << obj._parent;
   stream << obj._module_next;
@@ -208,6 +217,24 @@ dbIoType dbModTerm::getIoType() const
 {
   _dbModTerm* mterm = (_dbModTerm*) this;
   return dbIoType(mterm->_flags._io_type);
+}
+
+dbModNet* dbModTerm::getNet()
+{
+  _dbModTerm* modTerm = (_dbModTerm*) this;
+  if (modTerm->_net) {
+    _dbModule* parent = (_dbModule*) getParent();
+    _dbBlock* block = (_dbBlock*) parent->getOwner();
+    _dbModNet* net = block->_modnet_tbl->getPtr(modTerm->_net);
+    return (dbModNet*) net;
+  } else
+    return nullptr;
+}
+
+void dbModTerm::disconnect() {
+}
+
+void dbModTerm::connect(dbModNet* net) {
 }
 
 // User Code End dbModTermPublicMethods

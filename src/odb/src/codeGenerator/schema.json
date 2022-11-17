@@ -112,6 +112,11 @@
           "flags":["no-set","no-get"]
         },
         {
+          "name":"_net",
+          "type":"dbId<_dbModNet>",
+          "flags":["no-set","no-get"]
+        },
+        {
           "name":"_flags",
           "type":"_dbModTermFlags",
           "flags":["no-set","no-get"]

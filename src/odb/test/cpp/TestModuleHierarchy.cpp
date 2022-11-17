@@ -43,23 +43,28 @@ BOOST_FIXTURE_TEST_CASE(test_default,F_DEFAULT)
   BOOST_TEST(string(i0_term->getName())=="i0");
   BOOST_TEST(i0_term->getIoType()==dbIoType::INPUT);
   BOOST_TEST(i0_term->getParent()==master_mod);
+  BOOST_TEST(i0_term->getNet()==nullptr);
 
   dbModTerm* io1_term = dbModTerm::create(master_mod, "io1", dbIoType::INOUT);
   BOOST_TEST(io1_term!=nullptr);
   BOOST_TEST(string(io1_term->getName())=="io1");
   BOOST_TEST(io1_term->getIoType()==dbIoType::INOUT);
   BOOST_TEST(io1_term->getParent()==master_mod);
+  BOOST_TEST(io1_term->getNet()==nullptr);
 
   dbModTerm* o_term = dbModTerm::create(master_mod, "o", dbIoType::OUTPUT);
   BOOST_TEST(o_term!=nullptr);
   BOOST_TEST(string(o_term->getName())=="o");
   BOOST_TEST(o_term->getIoType()==dbIoType::OUTPUT);
   BOOST_TEST(o_term->getParent()==master_mod);
+  BOOST_TEST(o_term->getNet()==nullptr);
 
   dbModNet* i0_net = dbModNet::create(master_mod, "i0");
   BOOST_TEST(i0_net!=nullptr);
   BOOST_TEST(string(i0_net->getName())=="i0");
   BOOST_TEST(i0_net->getParent()==master_mod);
+  i0_term->connect(i0_net);
+
 
   BOOST_TEST(dbModInst::create(parent_mod,master_mod,"i1")!=nullptr);
   //dbModInst::create() rejected duplicate name

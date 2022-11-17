@@ -45,6 +45,7 @@ class dbIStream;
 class dbOStream;
 class dbDiff;
 class _dbDatabase;
+class _dbModNet;
 class _dbModule;
 // User Code Begin Classes
 // User Code End Classes
@@ -65,6 +66,7 @@ class _dbModTerm : public _dbObject
   // User Code End Enums
 
   char* _name;
+  dbId<_dbModNet> _net;
   _dbModTermFlags _flags;
   dbId<_dbModTerm> _next_entry;
   dbId<_dbModule> _parent;
