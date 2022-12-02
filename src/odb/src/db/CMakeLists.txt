@@ -122,7 +122,9 @@ add_library(db
     dbPowerSwitch.cpp
     dbIsolation.cpp
     dbModuleInstItr.cpp
+    dbModuleModTermItr.cpp
     dbModuleModInstItr.cpp
+    dbModNetModTermItr.cpp
     dbGroupModInstItr.cpp
     dbGroupItr.cpp
     dbRegionGroupItr.cpp

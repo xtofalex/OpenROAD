@@ -90,6 +90,7 @@
 #include "dbModule.h"
 #include "dbModuleInstItr.h"
 #include "dbModuleModInstItr.h"
+#include "dbModNetModTermItr.h"
 #include "dbNameCache.h"
 #include "dbNet.h"
 #include "dbObstruction.h"
@@ -358,6 +359,8 @@ _dbBlock::_dbBlock(_dbDatabase* db)
 
   _module_modinst_itr = new dbModuleModInstItr(_modinst_tbl);
 
+  _modnet_modterm_itr = new dbModNetModTermItr(_modterm_tbl);
+
   _region_group_itr = new dbRegionGroupItr(_group_tbl);
 
   _group_itr = new dbGroupItr(_group_tbl);
@@ -556,6 +559,8 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
   _module_inst_itr = new dbModuleInstItr(_inst_tbl);
 
   _module_modinst_itr = new dbModuleModInstItr(_modinst_tbl);
+
+  _modnet_modterm_itr = new dbModNetModTermItr(_modterm_tbl);
 
   _region_group_itr = new dbRegionGroupItr(_group_tbl);
 

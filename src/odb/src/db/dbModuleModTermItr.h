@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // BSD 3-Clause License
 //
-// Copyright (c) 2022, The Regents of the University of California
+// Copyright (c) 2020, The Regents of the University of California
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,67 +33,41 @@
 // Generator Code Begin Header
 #pragma once
 
-#include "dbCore.h"
+#include "dbIterator.h"
 #include "odb.h"
-
 // User Code Begin Includes
 // User Code End Includes
 
 namespace odb {
 
-class dbIStream;
-class dbOStream;
-class dbDiff;
-class _dbDatabase;
-class _dbModNet;
-class _dbModule;
-// User Code Begin Classes
-// User Code End Classes
-
-// User Code Begin Structs
-
-struct _dbModTermFlags
+class _dbModTerm;
+template <class T>
+class dbTable;
+// User Code Begin classes
+// User Code End classes
+class dbModuleModTermItr : public dbIterator
 {
-  dbIoType::Value _io_type : 4;
-};
-
-// User Code End Structs
-
-class _dbModTerm : public _dbObject
-{
- public:
-  // User Code Begin Enums
-  // User Code End Enums
-
-  char* _name;
-  dbId<_dbModNet> _net;
-  dbId<_dbModTerm> _next_modterm;
-  dbId<_dbModTerm> _prev_modterm;
-  _dbModTermFlags _flags;
-  dbId<_dbModTerm> _next_entry;
-  dbId<_dbModule> _parent;
-  dbId<_dbModTerm> _module_next;
-
+  dbTable<_dbModTerm>* _modterm_tbl;
   // User Code Begin Fields
   // User Code End Fields
-  _dbModTerm(_dbDatabase*, const _dbModTerm& r);
-  _dbModTerm(_dbDatabase*);
-  ~_dbModTerm();
-  bool operator==(const _dbModTerm& rhs) const;
-  bool operator!=(const _dbModTerm& rhs) const { return !operator==(rhs); }
-  bool operator<(const _dbModTerm& rhs) const;
-  void differences(dbDiff& diff,
-                   const char* field,
-                   const _dbModTerm& rhs) const;
-  void out(dbDiff& diff, char side, const char* field) const;
+ public:
+  dbModuleModTermItr(dbTable<_dbModTerm>* modterm_tbl)
+  {
+    _modterm_tbl = modterm_tbl;
+  }
+
+  bool reversible();
+  bool orderReversed();
+  void reverse(dbObject* parent);
+  uint sequential();
+  uint size(dbObject* parent);
+  uint begin(dbObject* parent);
+  uint end(dbObject* parent);
+  uint next(uint id, ...);
+  dbObject* getObject(uint id, ...);
   // User Code Begin Methods
-  void connectNet(_dbModNet* net, _dbBlock* block);
-  void disconnectNet(_dbModTerm* bterm, _dbBlock* block);
   // User Code End Methods
 };
-dbIStream& operator>>(dbIStream& stream, _dbModTerm& obj);
-dbOStream& operator<<(dbOStream& stream, const _dbModTerm& obj);
-// User Code Begin General
-// User Code End General
+
 }  // namespace odb
    // Generator Code End Header

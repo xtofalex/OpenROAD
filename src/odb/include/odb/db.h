@@ -9081,6 +9081,11 @@ class dbModNet : public dbObject
   static dbModNet* create(dbModule* module, const char* name);
 
   ///
+  /// Get all the terminals of this net.
+  ///
+  dbSet<dbModTerm> getTerms();
+
+  ///
   /// Get the dbModNet name.
   ///
   std::string getName() const;

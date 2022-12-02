@@ -42,6 +42,8 @@
 #include "dbTable.h"
 #include "dbTable.hpp"
 // User Code Begin Includes
+
+#include "dbModNetModTermItr.h"
 // User Code End Includes
 namespace odb {
 
@@ -53,6 +55,9 @@ bool _dbModNet::operator==(const _dbModNet& rhs) const
     return false;
 
   if (_next_entry != rhs._next_entry)
+    return false;
+
+  if (_modterms != rhs._modterms)
     return false;
 
   if (_parent != rhs._parent)
@@ -81,6 +86,7 @@ void _dbModNet::differences(dbDiff& diff,
 
   DIFF_FIELD(_name);
   DIFF_FIELD(_next_entry);
+  DIFF_FIELD(_modterms);
   DIFF_FIELD(_parent);
   DIFF_FIELD(_module_next);
   // User Code Begin Differences
@@ -92,6 +98,7 @@ void _dbModNet::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_BEGIN
   DIFF_OUT_FIELD(_name);
   DIFF_OUT_FIELD(_next_entry);
+  DIFF_OUT_FIELD(_modterms);
   DIFF_OUT_FIELD(_parent);
   DIFF_OUT_FIELD(_module_next);
 
@@ -112,6 +119,7 @@ _dbModNet::_dbModNet(_dbDatabase* db, const _dbModNet& r)
 {
   _name = r._name;
   _next_entry = r._next_entry;
+  _modterms = r._modterms;
   _parent = r._parent;
   _module_next = r._module_next;
   // User Code Begin CopyConstructor
@@ -122,6 +130,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModNet& obj)
 {
   stream >> obj._name;
   stream >> obj._next_entry;
+  stream >> obj._modterms;
   stream >> obj._parent;
   stream >> obj._module_next;
   // User Code Begin >>
@@ -132,6 +141,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbModNet& obj)
 {
   stream << obj._name;
   stream << obj._next_entry;
+  stream << obj._modterms;
   stream << obj._parent;
   stream << obj._module_next;
   // User Code Begin <<
@@ -189,6 +199,13 @@ std::string dbModNet::getName() const
   std::string h_name = std::string(obj->_name);
   size_t idx = h_name.find_last_of('/');
   return h_name.substr(idx + 1);
+}
+
+dbSet<dbModTerm> dbModNet::getTerms()
+{
+  _dbModNet* net = (_dbModNet*) this;
+  _dbBlock* block = (_dbBlock*) net->getOwner();
+  return dbSet<dbModTerm>(net, block->_modnet_modterm_itr);
 }
 
 // User Code End dbModNetPublicMethods

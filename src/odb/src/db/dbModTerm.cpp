@@ -56,6 +56,12 @@ bool _dbModTerm::operator==(const _dbModTerm& rhs) const
   if (_net != rhs._net)
     return false;
 
+  if (_next_modterm != rhs._next_modterm)
+    return false;
+
+  if (_prev_modterm != rhs._prev_modterm)
+    return false;
+
   if (_next_entry != rhs._next_entry)
     return false;
 
@@ -87,6 +93,8 @@ void _dbModTerm::differences(dbDiff& diff,
 
   DIFF_FIELD(_name);
   DIFF_FIELD(_net);
+  DIFF_FIELD(_next_modterm);
+  DIFF_FIELD(_prev_modterm);
   DIFF_FIELD(_next_entry);
   DIFF_FIELD(_parent);
   DIFF_FIELD(_module_next);
@@ -100,6 +108,8 @@ void _dbModTerm::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_BEGIN
   DIFF_OUT_FIELD(_name);
   DIFF_OUT_FIELD(_net);
+  DIFF_OUT_FIELD(_next_modterm);
+  DIFF_OUT_FIELD(_prev_modterm);
   DIFF_OUT_FIELD(_next_entry);
   DIFF_OUT_FIELD(_parent);
   DIFF_OUT_FIELD(_module_next);
@@ -123,6 +133,8 @@ _dbModTerm::_dbModTerm(_dbDatabase* db, const _dbModTerm& r)
 {
   _name = r._name;
   _net = r._net;
+  _next_modterm = r._next_modterm;
+  _prev_modterm = r._prev_modterm;
   _next_entry = r._next_entry;
   _parent = r._parent;
   _module_next = r._module_next;
@@ -135,6 +147,8 @@ dbIStream& operator>>(dbIStream& stream, _dbModTerm& obj)
 {
   stream >> obj._name;
   stream >> obj._net;
+  stream >> obj._next_modterm;
+  stream >> obj._prev_modterm;
   stream >> obj._next_entry;
   stream >> obj._parent;
   stream >> obj._module_next;
@@ -148,6 +162,8 @@ dbOStream& operator<<(dbOStream& stream, const _dbModTerm& obj)
 {
   stream << obj._name;
   stream << obj._net;
+  stream << obj._next_modterm;
+  stream << obj._prev_modterm;
   stream << obj._next_entry;
   stream << obj._parent;
   stream << obj._module_next;
@@ -233,10 +249,99 @@ dbModNet* dbModTerm::getNet()
 
 void dbModTerm::disconnect()
 {
+  _dbModTerm* modTerm = (_dbModTerm*) this;
+  if (modTerm->_net) {
+    _dbBlock* block = (_dbBlock*) modTerm->getOwner();
+    // Fixme similar to dbNet
+    // see dont_touch management
+    // and manage block journal
+    //
+    modTerm->disconnectNet(modTerm, block);
+  }
 }
 
-void dbModTerm::connect(dbModNet* net)
+void dbModTerm::connect(dbModNet* net_)
 {
+  _dbModTerm* modTerm = (_dbModTerm*) this;
+  _dbModNet* net = (_dbModNet*) net_;
+  _dbBlock* block = (_dbBlock*) net->getOwner();
+
+#if 0  // FIXME(xtof) To look at later
+  if (block->_journal) {
+    debugPrint(block->getImpl()->getLogger(),
+               utl::ODB,
+               "DB_ECO",
+               1,
+               "ECO: connect Bterm {} to net {}",
+               bterm->getId(),
+               net_->getId());
+    block->_journal->beginAction(dbJournal::CONNECT_OBJECT);
+    block->_journal->pushParam(dbBTermObj);
+    block->_journal->pushParam(bterm->getId());
+    block->_journal->pushParam(net_->getId());
+    block->_journal->endAction();
+  }
+#endif
+
+  if (modTerm->_net)
+    modTerm->disconnectNet(modTerm, block);
+  modTerm->connectNet(net, block);
+}
+
+void _dbModTerm::connectNet(_dbModNet* net, _dbBlock* block)
+{
+#if 0  // FIXME (xtof) To look at later
+  for (auto callback : block->_callbacks)
+    callback->inDbBTermPreConnect((dbBTerm*) this, (dbNet*) net);
+#endif
+  _net = net->getOID();
+  if (net->_modterms != 0) {
+    _dbModTerm* tail = block->_modterm_tbl->getPtr(net->_modterms);
+    _next_modterm = net->_modterms;
+    tail->_prev_modterm = getOID();
+  } else
+    _next_modterm = 0;
+  _prev_modterm = 0;
+  net->_modterms = getOID();
+#if 0
+  for (auto callback : block->_callbacks)
+    callback->inDbBTermPostConnect((dbBTerm*) this);
+#endif
+}
+
+void _dbModTerm::disconnectNet(_dbModTerm* modterm, _dbBlock* block)
+{
+  // unlink modterm from the net
+#if 0
+  for (auto callback : block->_callbacks)
+    callback->inDbBTermPreDisconnect((dbBTerm*) this);
+#endif
+  _dbModNet* net = block->_modnet_tbl->getPtr(modterm->_net);
+  uint id = modterm->getOID();
+
+  if (net->_modterms == id) {
+    net->_modterms = modterm->_next_modterm;
+
+    if (net->_modterms != 0) {
+      _dbModTerm* t = block->_modterm_tbl->getPtr(net->_modterms);
+      t->_prev_modterm = 0;
+    }
+  } else {
+    if (modterm->_next_modterm != 0) {
+      _dbModTerm* next = block->_modterm_tbl->getPtr(modterm->_next_modterm);
+      next->_prev_modterm = modterm->_prev_modterm;
+    }
+
+    if (modterm->_prev_modterm != 0) {
+      _dbModTerm* prev = block->_modterm_tbl->getPtr(modterm->_prev_modterm);
+      prev->_next_modterm = modterm->_next_modterm;
+    }
+  }
+  _net = 0;
+#if 0
+  for (auto callback : block->_callbacks)
+    callback->inDbBTermPostDisConnect((dbBTerm*) this, (dbNet*) net);
+#endif
 }
 
 // User Code End dbModTermPublicMethods

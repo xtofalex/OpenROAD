@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE TestModule
+#define BOOST_TEST_MODULE TestModuleHierarchy
 #include <boost/test/included/unit_test.hpp>
 #include <iostream>
 #include "db.h"
@@ -63,8 +63,17 @@ BOOST_FIXTURE_TEST_CASE(test_default,F_DEFAULT)
   BOOST_TEST(i0_net!=nullptr);
   BOOST_TEST(string(i0_net->getName())=="i0");
   BOOST_TEST(i0_net->getParent()==master_mod);
-  i0_term->connect(i0_net);
+  BOOST_TEST(i0_net->getTerms().empty());
+  BOOST_TEST(i0_net->getTerms().size()==0);
 
+  i0_term->connect(i0_net);
+  BOOST_TEST(i0_term->getNet()==i0_net);
+  BOOST_TEST(!i0_net->getTerms().empty());
+  BOOST_TEST(i0_net->getTerms().size()==1);
+
+  io1_term->connect(i0_net);
+  BOOST_TEST(io1_term->getNet()==i0_net);
+  BOOST_TEST(i0_net->getTerms().size()==2);
 
   BOOST_TEST(dbModInst::create(parent_mod,master_mod,"i1")!=nullptr);
   //dbModInst::create() rejected duplicate name

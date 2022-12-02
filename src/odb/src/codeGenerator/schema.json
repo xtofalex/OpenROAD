@@ -117,6 +117,16 @@
           "flags":["no-set","no-get"]
         },
         {
+          "name":"_next_modterm",
+          "type":"dbId<_dbModTerm>",
+          "flags":["no-set","no-get"]
+        },
+        {
+          "name":"_prev_modterm",
+          "type":"dbId<_dbModTerm>",
+          "flags":["no-set","no-get"]
+        },
+        {
           "name":"_flags",
           "type":"_dbModTermFlags",
           "flags":["no-set","no-get"]
@@ -154,6 +164,11 @@
         {
           "name":"_next_entry",
           "type":"dbId<_dbModNet>",
+          "flags":["no-set","no-get"]
+        },
+        {
+          "name":"_modterms",
+          "type":"dbId<_dbModTerm>",
           "flags":["no-set","no-get"]
         },
         {
@@ -419,6 +434,15 @@
       "includes": ["dbModule.h"]
     },
     {
+      "name": "dbModuleModTermItr",
+      "parentObject": "dbModTerm",
+      "tableName": "modterm_tbl",
+      "reversible": "true",
+      "orderReversed": "true",
+      "sequential": 0,
+      "includes": ["dbModule.h"]
+    },
+    {
       "name": "dbModuleModInstItr",
       "parentObject": "dbModInst",
       "tableName": "modinst_tbl",
@@ -426,6 +450,15 @@
       "orderReversed": "true",
       "sequential": 0,
       "includes": ["dbModule.h"]
+    },
+    {
+      "name": "dbModNetModTermItr",
+      "parentObject": "dbModTerm",
+      "tableName": "modterm_tbl",
+      "reversible": "true",
+      "orderReversed": "true",
+      "sequential": 0,
+      "includes": ["dbModNet.h"]
     },
     {
       "name": "dbGroupModInstItr",

@@ -45,6 +45,7 @@ class dbIStream;
 class dbOStream;
 class dbDiff;
 class _dbDatabase;
+class _dbModTerm;
 class _dbModule;
 // User Code Begin Classes
 // User Code End Classes
@@ -60,6 +61,7 @@ class _dbModNet : public _dbObject
 
   char* _name;
   dbId<_dbModNet> _next_entry;
+  dbId<_dbModTerm> _modterms;
   dbId<_dbModule> _parent;
   dbId<_dbModNet> _module_next;
 
