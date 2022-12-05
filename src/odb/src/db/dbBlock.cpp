@@ -91,6 +91,8 @@
 #include "dbModule.h"
 #include "dbModuleInstItr.h"
 #include "dbModuleModInstItr.h"
+#include "dbModuleModNetItr.h"
+#include "dbModuleModTermItr.h"
 #include "dbNameCache.h"
 #include "dbNet.h"
 #include "dbObstruction.h"
@@ -357,6 +359,10 @@ _dbBlock::_dbBlock(_dbDatabase* db)
 
   _module_inst_itr = new dbModuleInstItr(_inst_tbl);
 
+  _module_modterm_itr = new dbModuleModTermItr(_modterm_tbl);
+
+  _module_modnet_itr = new dbModuleModNetItr(_modnet_tbl);
+
   _module_modinst_itr = new dbModuleModInstItr(_modinst_tbl);
 
   _modnet_modterm_itr = new dbModNetModTermItr(_modterm_tbl);
@@ -527,6 +533,7 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
   _inst_hash.setTable(_inst_tbl);
   _module_hash.setTable(_module_tbl);
   _modterm_hash.setTable(_modterm_tbl);
+  _modnet_hash.setTable(_modnet_tbl);
   _modinst_hash.setTable(_modinst_tbl);
   _group_hash.setTable(_group_tbl);
   _inst_hdr_hash.setTable(_inst_hdr_tbl);
@@ -557,6 +564,10 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
   _region_inst_itr = new dbRegionInstItr(_inst_tbl);
 
   _module_inst_itr = new dbModuleInstItr(_inst_tbl);
+
+  _module_modterm_itr = new dbModuleModTermItr(_modterm_tbl);
+
+  _module_modnet_itr = new dbModuleModNetItr(_modnet_tbl);
 
   _module_modinst_itr = new dbModuleModInstItr(_modinst_tbl);
 
@@ -654,6 +665,8 @@ _dbBlock::~_dbBlock()
   delete _cc_seg_itr;
   delete _region_inst_itr;
   delete _module_inst_itr;
+  delete _module_modterm_itr;
+  delete _module_modnet_itr;
   delete _module_modinst_itr;
   delete _region_group_itr;
   delete _group_itr;

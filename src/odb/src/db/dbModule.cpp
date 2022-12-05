@@ -47,6 +47,8 @@
 #include "dbModInst.h"
 #include "dbModuleInstItr.h"
 #include "dbModuleModInstItr.h"
+#include "dbModuleModNetItr.h"
+#include "dbModuleModTermItr.h"
 #include "utl/Logger.h"
 // User Code End Includes
 namespace odb {
@@ -203,6 +205,30 @@ dbModInst* dbModule::getModInst() const
 }
 
 // User Code Begin dbModulePublicMethods
+dbSet<dbModTerm> dbModule::getTerms()
+{
+  _dbModule* module = (_dbModule*) this;
+  _dbBlock* block = (_dbBlock*) module->getOwner();
+  return dbSet<dbModTerm>(module, block->_module_modterm_itr);
+}
+
+dbModTerm* dbModule::findModTerm(const char* name)
+{
+  return nullptr;
+}
+
+dbSet<dbModNet> dbModule::getNets()
+{
+  _dbModule* module = (_dbModule*) this;
+  _dbBlock* block = (_dbBlock*) module->getOwner();
+  return dbSet<dbModNet>(module, block->_module_modnet_itr);
+}
+
+dbModNet* dbModule::findModNet(const char* name)
+{
+  return nullptr;
+}
+
 void dbModule::addInst(dbInst* inst)
 {
   _dbModule* module = (_dbModule*) this;

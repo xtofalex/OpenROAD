@@ -443,6 +443,15 @@
       "includes": ["dbModule.h"]
     },
     {
+      "name": "dbModuleModNetItr",
+      "parentObject": "dbModNet",
+      "tableName": "modnet_tbl",
+      "reversible": "true",
+      "orderReversed": "true",
+      "sequential": 0,
+      "includes": ["dbModule.h"]
+    },
+    {
       "name": "dbModuleModInstItr",
       "parentObject": "dbModInst",
       "tableName": "modinst_tbl",

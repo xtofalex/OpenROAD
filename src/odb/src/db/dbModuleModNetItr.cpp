@@ -31,9 +31,9 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 // Generator Code Begin Cpp
-#include "dbModuleModTermItr.h"
+#include "dbModuleModNetItr.h"
 
-#include "dbModTerm.h"
+#include "dbModNet.h"
 #include "dbModule.h"
 #include "dbTable.h"
 // User Code Begin Includes
@@ -43,80 +43,80 @@ namespace odb {
 
 ////////////////////////////////////////////////////////////////////
 //
-// dbModuleModTermItr - Methods
+// dbModuleModNetItr - Methods
 //
 ////////////////////////////////////////////////////////////////////
 
-bool dbModuleModTermItr::reversible()
+bool dbModuleModNetItr::reversible()
 {
   return true;
 }
 
-bool dbModuleModTermItr::orderReversed()
+bool dbModuleModNetItr::orderReversed()
 {
   return true;
 }
 
-void dbModuleModTermItr::reverse(dbObject* parent)
+void dbModuleModNetItr::reverse(dbObject* parent)
 {
   // User Code Begin reverse
   _dbModule* module = (_dbModule*) parent;
-  uint id = module->_modterms;
+  uint id = module->_modnets;
   uint list = 0;
 
   while (id != 0) {
-    _dbModTerm* modterm = _modterm_tbl->getPtr(id);
-    uint n = modterm->_module_next;
-    modterm->_module_next = list;
+    _dbModNet* modnet = _modnet_tbl->getPtr(id);
+    uint n = modnet->_module_next;
+    modnet->_module_next = list;
     list = id;
     id = n;
   }
-  module->_modterms = list;
+  module->_modnets = list;
   // User Code End reverse
 }
 
-uint dbModuleModTermItr::sequential()
+uint dbModuleModNetItr::sequential()
 {
   return 0;
 }
 
-uint dbModuleModTermItr::size(dbObject* parent)
+uint dbModuleModNetItr::size(dbObject* parent)
 {
   uint id;
   uint cnt = 0;
 
-  for (id = dbModuleModTermItr::begin(parent);
-       id != dbModuleModTermItr::end(parent);
-       id = dbModuleModTermItr::next(id))
+  for (id = dbModuleModNetItr::begin(parent);
+       id != dbModuleModNetItr::end(parent);
+       id = dbModuleModNetItr::next(id))
     ++cnt;
 
   return cnt;
 }
 
-uint dbModuleModTermItr::begin(dbObject* parent)
+uint dbModuleModNetItr::begin(dbObject* parent)
 {
   // User Code Begin begin
   _dbModule* module = (_dbModule*) parent;
-  return module->_modterms;
+  return module->_modnets;
   // User Code End begin
 }
 
-uint dbModuleModTermItr::end(dbObject* /* unused: parent */)
+uint dbModuleModNetItr::end(dbObject* /* unused: parent */)
 {
   return 0;
 }
 
-uint dbModuleModTermItr::next(uint id, ...)
+uint dbModuleModNetItr::next(uint id, ...)
 {
   // User Code Begin next
-  _dbModTerm* modterm = _modterm_tbl->getPtr(id);
-  return modterm->_module_next;
+  _dbModNet* modnet = _modnet_tbl->getPtr(id);
+  return modnet->_module_next;
   // User Code End next
 }
 
-dbObject* dbModuleModTermItr::getObject(uint id, ...)
+dbObject* dbModuleModNetItr::getObject(uint id, ...)
 {
-  return _modterm_tbl->getPtr(id);
+  return _modnet_tbl->getPtr(id);
 }
 // User Code Begin Methods
 // User Code End Methods

@@ -123,6 +123,7 @@ add_library(db
     dbIsolation.cpp
     dbModuleInstItr.cpp
     dbModuleModTermItr.cpp
+    dbModuleModNetItr.cpp
     dbModuleModInstItr.cpp
     dbModNetModTermItr.cpp
     dbGroupModInstItr.cpp

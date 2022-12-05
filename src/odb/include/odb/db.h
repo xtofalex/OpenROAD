@@ -9008,6 +9008,13 @@ class dbModule : public dbObject
   dbModInst* getModInst() const;
 
   // User Code Begin dbModule
+  dbSet<dbModTerm> getTerms();
+
+  dbModTerm* findModTerm(const char* name);
+
+  dbSet<dbModNet> getNets();
+
+  dbModNet* findModNet(const char* name);
 
   // Adding an inst to a new module will remove it from its previous
   // module.
