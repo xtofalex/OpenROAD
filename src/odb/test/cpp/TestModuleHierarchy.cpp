@@ -50,6 +50,8 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
 
   BOOST_TEST(!master_mod->getTerms().empty());
   BOOST_TEST(master_mod->getTerms().size() == 1);
+  BOOST_TEST(master_mod->findModTerm("i0") == i0_term);
+  BOOST_TEST(master_mod->findModTerm("io1") == nullptr);
 
   dbModTerm* io1_term = dbModTerm::create(master_mod, "io1", dbIoType::INOUT);
   BOOST_TEST(io1_term != nullptr);
@@ -58,6 +60,7 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   BOOST_TEST(io1_term->getParent() == master_mod);
   BOOST_TEST(io1_term->getNet() == nullptr);
   BOOST_TEST(master_mod->getTerms().size() == 2);
+  BOOST_TEST(master_mod->findModTerm("io1") == io1_term);
 
   dbModTerm* o_term = dbModTerm::create(master_mod, "o", dbIoType::OUTPUT);
   BOOST_TEST(o_term != nullptr);
@@ -66,6 +69,7 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   BOOST_TEST(o_term->getParent() == master_mod);
   BOOST_TEST(o_term->getNet() == nullptr);
   BOOST_TEST(master_mod->getTerms().size() == 3);
+  BOOST_TEST(master_mod->findModTerm("o") == o_term);
 
   dbModNet* i0_net = dbModNet::create(master_mod, "i0");
   BOOST_TEST(i0_net != nullptr);
@@ -74,6 +78,8 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   BOOST_TEST(i0_net->getTerms().empty());
   BOOST_TEST(i0_net->getTerms().size() == 0);
   BOOST_TEST(master_mod->getNets().size() == 1);
+  BOOST_TEST(master_mod->findModNet("i0") == i0_net);
+  BOOST_TEST(master_mod->findModNet("i1") == nullptr);
 
   i0_term->connect(i0_net);
   BOOST_TEST(i0_term->getNet() == i0_net);

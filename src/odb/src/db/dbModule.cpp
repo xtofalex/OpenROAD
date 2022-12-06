@@ -45,6 +45,8 @@
 
 #include "dbInst.h"
 #include "dbModInst.h"
+#include "dbModNet.h"
+#include "dbModTerm.h"
 #include "dbModuleInstItr.h"
 #include "dbModuleModInstItr.h"
 #include "dbModuleModNetItr.h"
@@ -214,7 +216,10 @@ dbSet<dbModTerm> dbModule::getTerms()
 
 dbModTerm* dbModule::findModTerm(const char* name)
 {
-  return nullptr;
+  _dbModule* obj = (_dbModule*) this;
+  _dbBlock* par = (_dbBlock*) obj->getOwner();
+  std::string h_name = std::string(obj->_name) + "/" + std::string(name);
+  return (dbModTerm*) par->_modterm_hash.find(h_name.c_str());
 }
 
 dbSet<dbModNet> dbModule::getNets()
@@ -226,7 +231,10 @@ dbSet<dbModNet> dbModule::getNets()
 
 dbModNet* dbModule::findModNet(const char* name)
 {
-  return nullptr;
+  _dbModule* obj = (_dbModule*) this;
+  _dbBlock* par = (_dbBlock*) obj->getOwner();
+  std::string h_name = std::string(obj->_name) + "/" + std::string(name);
+  return (dbModNet*) par->_modnet_hash.find(h_name.c_str());
 }
 
 void dbModule::addInst(dbInst* inst)
