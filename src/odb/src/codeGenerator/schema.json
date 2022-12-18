@@ -172,6 +172,11 @@
           "flags":["no-set","no-get"]
         },
         {
+          "name":"_flags",
+          "type":"_dbModITermFlags",
+          "flags":["no-set","no-get"]
+        },
+        {
           "name":"_next_entry",
           "type":"dbId<_dbModITerm>",
           "flags":["no-set","no-get"]

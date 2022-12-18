@@ -230,12 +230,14 @@ void _dbModITerm::disconnectNet(_dbModITerm* moditerm, _dbBlock* block)
     }
   } else {
     if (moditerm->_next_moditerm != 0) {
-      _dbModITerm* next = block->_moditerm_tbl->getPtr(moditerm->_next_moditerm);
+      _dbModITerm* next
+          = block->_moditerm_tbl->getPtr(moditerm->_next_moditerm);
       next->_prev_moditerm = moditerm->_prev_moditerm;
     }
 
     if (moditerm->_prev_moditerm != 0) {
-      _dbModITerm* prev = block->_moditerm_tbl->getPtr(moditerm->_prev_moditerm);
+      _dbModITerm* prev
+          = block->_moditerm_tbl->getPtr(moditerm->_prev_moditerm);
       prev->_next_moditerm = moditerm->_next_moditerm;
     }
   }

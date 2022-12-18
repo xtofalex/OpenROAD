@@ -67,6 +67,7 @@ class _dbModITerm : public _dbObject
   dbId<_dbModNet> _net;
   dbId<_dbModITerm> _next_moditerm;
   dbId<_dbModITerm> _prev_moditerm;
+  _dbModITermFlags _flags;
   dbId<_dbModITerm> _next_entry;
   dbId<_dbModInst> _inst;
 
