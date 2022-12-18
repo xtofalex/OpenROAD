@@ -109,6 +109,7 @@ enum dbObjectType
   dbTechLayerAreaRuleObj,
   dbModuleObj,
   dbModTermObj,
+  dbModITermObj,
   dbModNetObj,
   dbModInstObj,
   dbGroupObj,

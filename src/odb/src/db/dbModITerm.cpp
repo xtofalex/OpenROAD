@@ -31,136 +31,117 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 // Generator Code Begin Cpp
-#include "dbModNet.h"
+#include "dbModITerm.h"
 
 #include "db.h"
 #include "dbBlock.h"
 #include "dbDatabase.h"
 #include "dbDiff.hpp"
-#include "dbHashTable.hpp"
-#include "dbModule.h"
+#include "dbModInst.h"
 #include "dbTable.h"
 #include "dbTable.hpp"
 // User Code Begin Includes
-
-#include "dbModNetModTermItr.h"
 // User Code End Includes
 namespace odb {
 
-template class dbTable<_dbModNet>;
+template class dbTable<_dbModITerm>;
 
-bool _dbModNet::operator==(const _dbModNet& rhs) const
+bool _dbModITerm::operator==(const _dbModITerm& rhs) const
 {
-  if (_name != rhs._name)
+  if (_net != rhs._net)
+    return false;
+
+  if (_next_moditerm != rhs._next_moditerm)
+    return false;
+
+  if (_prev_moditerm != rhs._prev_moditerm)
     return false;
 
   if (_next_entry != rhs._next_entry)
     return false;
 
-  if (_modterms != rhs._modterms)
-    return false;
-
-  if (_moditerms != rhs._moditerms)
-    return false;
-
-  if (_parent != rhs._parent)
-    return false;
-
-  if (_module_next != rhs._module_next)
+  if (_inst != rhs._inst)
     return false;
 
   // User Code Begin ==
   // User Code End ==
   return true;
 }
-bool _dbModNet::operator<(const _dbModNet& rhs) const
+bool _dbModITerm::operator<(const _dbModITerm& rhs) const
 {
   // User Code Begin <
-  if (strcmp(_name, rhs._name) >= 0)
-    return false;
   // User Code End <
   return true;
 }
-void _dbModNet::differences(dbDiff& diff,
-                            const char* field,
-                            const _dbModNet& rhs) const
+void _dbModITerm::differences(dbDiff& diff,
+                              const char* field,
+                              const _dbModITerm& rhs) const
 {
   DIFF_BEGIN
 
-  DIFF_FIELD(_name);
+  DIFF_FIELD(_net);
+  DIFF_FIELD(_next_moditerm);
+  DIFF_FIELD(_prev_moditerm);
   DIFF_FIELD(_next_entry);
-  DIFF_FIELD(_modterms);
-  DIFF_FIELD(_moditerms);
-  DIFF_FIELD(_parent);
-  DIFF_FIELD(_module_next);
+  DIFF_FIELD(_inst);
   // User Code Begin Differences
   // User Code End Differences
   DIFF_END
 }
-void _dbModNet::out(dbDiff& diff, char side, const char* field) const
+void _dbModITerm::out(dbDiff& diff, char side, const char* field) const
 {
   DIFF_OUT_BEGIN
-  DIFF_OUT_FIELD(_name);
+  DIFF_OUT_FIELD(_net);
+  DIFF_OUT_FIELD(_next_moditerm);
+  DIFF_OUT_FIELD(_prev_moditerm);
   DIFF_OUT_FIELD(_next_entry);
-  DIFF_OUT_FIELD(_modterms);
-  DIFF_OUT_FIELD(_moditerms);
-  DIFF_OUT_FIELD(_parent);
-  DIFF_OUT_FIELD(_module_next);
+  DIFF_OUT_FIELD(_inst);
 
   // User Code Begin Out
   // User Code End Out
   DIFF_END
 }
-_dbModNet::_dbModNet(_dbDatabase* db)
+_dbModITerm::_dbModITerm(_dbDatabase* db)
 {
   // User Code Begin Constructor
-  _name = 0;
-  _next_entry = 0;
-  _parent = 0;
-  _module_next = 0;
   // User Code End Constructor
 }
-_dbModNet::_dbModNet(_dbDatabase* db, const _dbModNet& r)
+_dbModITerm::_dbModITerm(_dbDatabase* db, const _dbModITerm& r)
 {
-  _name = r._name;
+  _net = r._net;
+  _next_moditerm = r._next_moditerm;
+  _prev_moditerm = r._prev_moditerm;
   _next_entry = r._next_entry;
-  _modterms = r._modterms;
-  _moditerms = r._moditerms;
-  _parent = r._parent;
-  _module_next = r._module_next;
+  _inst = r._inst;
   // User Code Begin CopyConstructor
   // User Code End CopyConstructor
 }
 
-dbIStream& operator>>(dbIStream& stream, _dbModNet& obj)
+dbIStream& operator>>(dbIStream& stream, _dbModITerm& obj)
 {
-  stream >> obj._name;
+  stream >> obj._net;
+  stream >> obj._next_moditerm;
+  stream >> obj._prev_moditerm;
   stream >> obj._next_entry;
-  stream >> obj._modterms;
-  stream >> obj._moditerms;
-  stream >> obj._parent;
-  stream >> obj._module_next;
+  stream >> obj._inst;
   // User Code Begin >>
   // User Code End >>
   return stream;
 }
-dbOStream& operator<<(dbOStream& stream, const _dbModNet& obj)
+dbOStream& operator<<(dbOStream& stream, const _dbModITerm& obj)
 {
-  stream << obj._name;
+  stream << obj._net;
+  stream << obj._next_moditerm;
+  stream << obj._prev_moditerm;
   stream << obj._next_entry;
-  stream << obj._modterms;
-  stream << obj._moditerms;
-  stream << obj._parent;
-  stream << obj._module_next;
+  stream << obj._inst;
   // User Code Begin <<
   // User Code End <<
   return stream;
 }
 
-_dbModNet::~_dbModNet()
+_dbModITerm::~_dbModITerm()
 {
-  if (_name)
-    free((void*) _name);
   // User Code Begin Destructor
   // User Code End Destructor
 }
@@ -170,52 +151,20 @@ _dbModNet::~_dbModNet()
 
 ////////////////////////////////////////////////////////////////////
 //
-// dbModNet - Methods
+// dbModITerm - Methods
 //
 ////////////////////////////////////////////////////////////////////
 
-dbModule* dbModNet::getParent() const
+dbModInst* dbModITerm::getInst() const
 {
-  _dbModNet* obj = (_dbModNet*) this;
-  if (obj->_parent == 0)
+  _dbModITerm* obj = (_dbModITerm*) this;
+  if (obj->_inst == 0)
     return NULL;
   _dbBlock* par = (_dbBlock*) obj->getOwner();
-  return (dbModule*) par->_module_tbl->getPtr(obj->_parent);
+  return (dbModInst*) par->_modinst_tbl->getPtr(obj->_inst);
 }
 
-// User Code Begin dbModNetPublicMethods
-dbModNet* dbModNet::create(dbModule* parentModule, const char* name)
-{
-  _dbModule* parent = (_dbModule*) parentModule;
-  _dbBlock* block = (_dbBlock*) parent->getOwner();
-  std::string h_name = std::string(parent->_name) + '/' + std::string(name);
-  if (block->_modnet_hash.hasMember(h_name.c_str()))
-    return nullptr;
-  _dbModNet* modnet = block->_modnet_tbl->create();
-  modnet->_name = strdup(h_name.c_str());
-  ZALLOCATED(modnet->_name);
-  modnet->_parent = parent->getOID();
-  modnet->_module_next = parent->_modnets;
-  parent->_modnets = modnet->getOID();
-  block->_modnet_hash.insert(modnet);
-  return (dbModNet*) modnet;
-}
-
-std::string dbModNet::getName() const
-{
-  _dbModNet* obj = (_dbModNet*) this;
-  std::string h_name = std::string(obj->_name);
-  size_t idx = h_name.find_last_of('/');
-  return h_name.substr(idx + 1);
-}
-
-dbSet<dbModTerm> dbModNet::getTerms()
-{
-  _dbModNet* net = (_dbModNet*) this;
-  _dbBlock* block = (_dbBlock*) net->getOwner();
-  return dbSet<dbModTerm>(net, block->_modnet_modterm_itr);
-}
-
-// User Code End dbModNetPublicMethods
+// User Code Begin dbModITermPublicMethods
+// User Code End dbModITermPublicMethods
 }  // namespace odb
    // Generator Code End Cpp

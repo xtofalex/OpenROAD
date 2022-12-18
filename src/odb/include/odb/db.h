@@ -145,6 +145,7 @@ class dbMetalWidthViaMap;
 class dbTechLayerAreaRule;
 class dbModule;
 class dbModTerm;
+class dbModITerm;
 class dbModNet;
 class dbModInst;
 class dbGroup;
@@ -9078,6 +9079,18 @@ class dbModTerm : public dbObject
   void connect(dbModNet* net);
 
   // User Code End dbModTerm
+};
+
+class dbModITerm : public dbObject
+{
+ public:
+  // User Code Begin dbModITermEnums
+  // User Code End dbModITermEnums
+
+  dbModInst* getInst() const;
+
+  // User Code Begin dbModITerm
+  // User Code End dbModITerm
 };
 
 class dbModNet : public dbObject

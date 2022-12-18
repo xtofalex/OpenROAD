@@ -45,43 +45,43 @@ class dbIStream;
 class dbOStream;
 class dbDiff;
 class _dbDatabase;
-class _dbModTerm;
-class _dbModITerm;
-class _dbModule;
+class _dbModNet;
+class _dbModInst;
 // User Code Begin Classes
 // User Code End Classes
 
 // User Code Begin Structs
 // User Code End Structs
 
-class _dbModNet : public _dbObject
+class _dbModITerm : public _dbObject
 {
  public:
   // User Code Begin Enums
   // User Code End Enums
 
-  char* _name;
-  dbId<_dbModNet> _next_entry;
-  dbId<_dbModTerm> _modterms;
-  dbId<_dbModITerm> _moditerms;
-  dbId<_dbModule> _parent;
-  dbId<_dbModNet> _module_next;
+  dbId<_dbModNet> _net;
+  dbId<_dbModITerm> _next_moditerm;
+  dbId<_dbModITerm> _prev_moditerm;
+  dbId<_dbModITerm> _next_entry;
+  dbId<_dbModInst> _inst;
 
   // User Code Begin Fields
   // User Code End Fields
-  _dbModNet(_dbDatabase*, const _dbModNet& r);
-  _dbModNet(_dbDatabase*);
-  ~_dbModNet();
-  bool operator==(const _dbModNet& rhs) const;
-  bool operator!=(const _dbModNet& rhs) const { return !operator==(rhs); }
-  bool operator<(const _dbModNet& rhs) const;
-  void differences(dbDiff& diff, const char* field, const _dbModNet& rhs) const;
+  _dbModITerm(_dbDatabase*, const _dbModITerm& r);
+  _dbModITerm(_dbDatabase*);
+  ~_dbModITerm();
+  bool operator==(const _dbModITerm& rhs) const;
+  bool operator!=(const _dbModITerm& rhs) const { return !operator==(rhs); }
+  bool operator<(const _dbModITerm& rhs) const;
+  void differences(dbDiff& diff,
+                   const char* field,
+                   const _dbModITerm& rhs) const;
   void out(dbDiff& diff, char side, const char* field) const;
   // User Code Begin Methods
   // User Code End Methods
 };
-dbIStream& operator>>(dbIStream& stream, _dbModNet& obj);
-dbOStream& operator<<(dbOStream& stream, const _dbModNet& obj);
+dbIStream& operator>>(dbIStream& stream, _dbModITerm& obj);
+dbOStream& operator<<(dbOStream& stream, const _dbModITerm& obj);
 // User Code Begin General
 // User Code End General
 }  // namespace odb
