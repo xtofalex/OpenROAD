@@ -88,7 +88,7 @@ class _dbModTerm : public _dbObject
   void out(dbDiff& diff, char side, const char* field) const;
   // User Code Begin Methods
   void connectNet(_dbModNet* net, _dbBlock* block);
-  void disconnectNet(_dbModTerm* bterm, _dbBlock* block);
+  void disconnectNet(_dbModTerm* modterm, _dbBlock* block);
   // User Code End Methods
 };
 dbIStream& operator>>(dbIStream& stream, _dbModTerm& obj);

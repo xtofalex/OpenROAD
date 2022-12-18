@@ -9090,6 +9090,16 @@ class dbModITerm : public dbObject
   dbModInst* getInst() const;
 
   // User Code Begin dbModITerm
+  ///
+  /// Connect this iterm to this net.
+  ///
+  void connect(dbModNet* net);
+
+  ///
+  /// Disconnect this iterm from the net it is connected to.
+  ///
+  void disconnect();
+
   // User Code End dbModITerm
 };
 

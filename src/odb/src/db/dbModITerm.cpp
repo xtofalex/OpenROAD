@@ -41,6 +41,7 @@
 #include "dbTable.h"
 #include "dbTable.hpp"
 // User Code Begin Includes
+#include "dbModNet.h"
 // User Code End Includes
 namespace odb {
 
@@ -165,6 +166,87 @@ dbModInst* dbModITerm::getInst() const
 }
 
 // User Code Begin dbModITermPublicMethods
+void dbModITerm::connect(dbModNet* net_)
+{
+  _dbModITerm* iterm = (_dbModITerm*) this;
+  _dbModNet* net = (_dbModNet*) net_;
+  _dbBlock* block = (_dbBlock*) iterm->getOwner();
+
+  if (iterm->_net)
+    iterm->disconnectNet(iterm, block);
+  iterm->connectNet(net, block);
+}
+
+void dbModITerm::disconnect()
+{
+  _dbModITerm* iterm = (_dbModITerm*) this;
+  if (iterm->_net) {
+    _dbBlock* block = (_dbBlock*) iterm->getOwner();
+    // Fixme similar to dbNet
+    // see dont_touch management
+    // and manage block journal
+    //
+    iterm->disconnectNet(iterm, block);
+  }
+}
+
+void _dbModITerm::connectNet(_dbModNet* net, _dbBlock* block)
+{
+#if 0  // FIXME (xtof) To look at later
+  for (auto callback : block->_callbacks)
+    callback->inDbBTermPreConnect((dbBTerm*) this, (dbNet*) net);
+#endif
+  _net = net->getOID();
+  if (net->_moditerms != 0) {
+    _dbModITerm* tail = block->_moditerm_tbl->getPtr(net->_moditerms);
+    _next_moditerm = net->_moditerms;
+    tail->_prev_moditerm = getOID();
+  } else
+    _next_moditerm = 0;
+  _prev_moditerm = 0;
+  net->_moditerms = getOID();
+#if 0
+  for (auto callback : block->_callbacks)
+    callback->inDbBTermPostConnect((dbBTerm*) this);
+#endif
+}
+
+void _dbModITerm::disconnectNet(_dbModITerm* moditerm, _dbBlock* block)
+{
+  // unlink moditerm from the net
+#if 0
+  for (auto callback : block->_callbacks)
+    callback->inDbBTermPreDisconnect((dbBTerm*) this);
+#endif
+  _dbModNet* net = block->_modnet_tbl->getPtr(moditerm->_net);
+  uint id = moditerm->getOID();
+
+  if (net->_moditerms == id) {
+    net->_moditerms = moditerm->_next_moditerm;
+
+    if (net->_moditerms != 0) {
+      _dbModITerm* it = block->_moditerm_tbl->getPtr(net->_moditerms);
+      it->_prev_moditerm = 0;
+    }
+  } else {
+    if (moditerm->_next_moditerm != 0) {
+      _dbModITerm* next = block->_moditerm_tbl->getPtr(moditerm->_next_moditerm);
+      next->_prev_moditerm = moditerm->_prev_moditerm;
+    }
+
+    if (moditerm->_prev_moditerm != 0) {
+      _dbModITerm* prev = block->_moditerm_tbl->getPtr(moditerm->_prev_moditerm);
+      prev->_next_moditerm = moditerm->_next_moditerm;
+    }
+  }
+  _net = 0;
+
+#if 0
+  for (auto callback : block->_callbacks)
+    callback->inDbBTermPostDisConnect((dbBTerm*) this, (dbNet*) net);
+#endif
+}
+
 // User Code End dbModITermPublicMethods
 }  // namespace odb
    // Generator Code End Cpp

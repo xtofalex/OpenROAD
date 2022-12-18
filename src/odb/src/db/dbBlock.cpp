@@ -85,6 +85,7 @@
 #include "dbJournal.h"
 #include "dbLogicPort.h"
 #include "dbModInst.h"
+#include "dbModITerm.h"
 #include "dbModNet.h"
 #include "dbModNetModTermItr.h"
 #include "dbModTerm.h"
@@ -205,6 +206,9 @@ _dbBlock::_dbBlock(_dbDatabase* db)
 
   _modinst_tbl = new dbTable<_dbModInst>(
       db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbModInstObj);
+
+  _moditerm_tbl = new dbTable<_dbModITerm>(
+      db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbModITermObj);
 
   _powerdomain_tbl = new dbTable<_dbPowerDomain>(
       db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbPowerDomainObj);
@@ -329,6 +333,7 @@ _dbBlock::_dbBlock(_dbDatabase* db)
   _modterm_hash.setTable(_modterm_tbl);
   _modnet_hash.setTable(_modnet_tbl);
   _modinst_hash.setTable(_modinst_tbl);
+  _moditerm_hash.setTable(_moditerm_tbl);
   _powerdomain_hash.setTable(_powerdomain_tbl);
   _logicport_hash.setTable(_logicport_tbl);
   _powerswitch_hash.setTable(_powerswitch_tbl);
@@ -457,6 +462,8 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
 
   _modinst_tbl = new dbTable<_dbModInst>(db, this, *block._modinst_tbl);
 
+  _moditerm_tbl = new dbTable<_dbModITerm>(db, this, *block._moditerm_tbl);
+
   _powerdomain_tbl
       = new dbTable<_dbPowerDomain>(db, this, *block._powerdomain_tbl);
 
@@ -535,6 +542,7 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
   _modterm_hash.setTable(_modterm_tbl);
   _modnet_hash.setTable(_modnet_tbl);
   _modinst_hash.setTable(_modinst_tbl);
+  _moditerm_hash.setTable(_moditerm_tbl);
   _group_hash.setTable(_group_tbl);
   _inst_hdr_hash.setTable(_inst_hdr_tbl);
   _bterm_hash.setTable(_bterm_tbl);
@@ -621,6 +629,7 @@ _dbBlock::~_dbBlock()
   delete _modterm_tbl;
   delete _modnet_tbl;
   delete _modinst_tbl;
+  delete _moditerm_tbl;
   delete _powerdomain_tbl;
   delete _logicport_tbl;
   delete _powerswitch_tbl;
@@ -791,6 +800,9 @@ dbObjectTable* _dbBlock::getObjectTable(dbObjectType type)
     case dbModInstObj:
       return _modinst_tbl;
 
+    case dbModITermObj:
+      return _moditerm_tbl;
+
     case dbPowerDomainObj:
       return _powerdomain_tbl;
 
@@ -954,6 +966,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbBlock& block)
   stream << *block._modterm_tbl;
   stream << *block._modnet_tbl;
   stream << *block._modinst_tbl;
+  stream << *block._moditerm_tbl;
   stream << *block._powerdomain_tbl;
   stream << *block._logicport_tbl;
   stream << *block._powerswitch_tbl;
@@ -1053,6 +1066,7 @@ dbIStream& operator>>(dbIStream& stream, _dbBlock& block)
   stream >> *block._modterm_tbl;
   stream >> *block._modnet_tbl;
   stream >> *block._modinst_tbl;
+  stream >> *block._moditerm_tbl;
   stream >> *block._powerdomain_tbl;
   stream >> *block._logicport_tbl;
   stream >> *block._powerswitch_tbl;
@@ -1275,6 +1289,9 @@ bool _dbBlock::operator==(const _dbBlock& rhs) const
   if (*_modinst_tbl != *rhs._modinst_tbl)
     return false;
 
+  if (*_moditerm_tbl != *rhs._moditerm_tbl)
+    return false;
+
   if (*_powerdomain_tbl != *rhs._powerdomain_tbl)
     return false;
 
@@ -1426,6 +1443,7 @@ void _dbBlock::differences(dbDiff& diff,
   DIFF_TABLE(_modterm_tbl);
   DIFF_TABLE(_modnet_tbl);
   DIFF_TABLE(_modinst_tbl);
+  DIFF_TABLE(_moditerm_tbl);
   DIFF_TABLE(_powerdomain_tbl);
   DIFF_TABLE(_logicport_tbl);
   DIFF_TABLE(_powerswitch_tbl);
@@ -1521,6 +1539,7 @@ void _dbBlock::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_TABLE(_modterm_tbl);
   DIFF_OUT_TABLE(_modnet_tbl);
   DIFF_OUT_TABLE(_modinst_tbl);
+  DIFF_OUT_TABLE(_moditerm_tbl);
   DIFF_OUT_TABLE(_powerdomain_tbl);
   DIFF_OUT_TABLE(_logicport_tbl);
   DIFF_OUT_TABLE(_powerswitch_tbl);

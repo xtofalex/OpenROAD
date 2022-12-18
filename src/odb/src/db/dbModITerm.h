@@ -51,6 +51,11 @@ class _dbModInst;
 // User Code End Classes
 
 // User Code Begin Structs
+
+struct _dbModITermFlags
+{
+};
+
 // User Code End Structs
 
 class _dbModITerm : public _dbObject
@@ -78,6 +83,8 @@ class _dbModITerm : public _dbObject
                    const _dbModITerm& rhs) const;
   void out(dbDiff& diff, char side, const char* field) const;
   // User Code Begin Methods
+  void connectNet(_dbModNet* net, _dbBlock* block);
+  void disconnectNet(_dbModITerm* iterm, _dbBlock* block);
   // User Code End Methods
 };
 dbIStream& operator>>(dbIStream& stream, _dbModITerm& obj);
