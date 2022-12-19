@@ -232,6 +232,11 @@ dbModInst* dbModInst::create(dbModule* parentModule,
   parent->_modinsts = modinst->getOID();
   master->_mod_inst = modinst->getOID();
   block->_modinst_hash.insert(modinst);
+
+  // create the moditerms
+  uint modterm_cnt = master->_modterms.size();
+  modinst->_moditerms.resize(modterm_cnt);
+
   return (dbModInst*) modinst;
 }
 
