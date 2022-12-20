@@ -283,7 +283,7 @@
         }
       ],
       "constructors":[],
-      "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp"],
+      "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp","dbGroup.h","dbModITerm.h"],
       "h_includes": ["dbVector.h"]
     },
     {

@@ -37,12 +37,13 @@
 #include "dbBlock.h"
 #include "dbDatabase.h"
 #include "dbDiff.hpp"
+#include "dbGroup.h"
 #include "dbHashTable.hpp"
+#include "dbModITerm.h"
 #include "dbModule.h"
 #include "dbTable.h"
 #include "dbTable.hpp"
 // User Code Begin Includes
-#include "dbGroup.h"
 // User Code End Includes
 namespace odb {
 
@@ -238,6 +239,14 @@ dbModInst* dbModInst::create(dbModule* parentModule,
   // create the moditerms
   uint modterm_cnt = masterModule->getTerms().size();
   modinst->_moditerms.resize(modterm_cnt);
+
+  uint i;
+  for (i = 0; i < modterm_cnt; ++i) {
+    _dbModITerm* iterm = block->_moditerm_tbl->create();
+    modinst->_moditerms[i] = iterm->getOID();
+    // iterm->_flags._mterm_idx = i;
+    iterm->_inst = modinst->getOID();
+  }
 
   return (dbModInst*) modinst;
 }
