@@ -274,10 +274,17 @@
           "type":"dbId<_dbGroup>",
           "flags":["no-set"],
           "parent":"dbBlock"
+        },
+        {
+          "name":"_moditerms",
+          "type":"dbVector<uint>",
+          "flags":["no-get","no-set"],
+          "parent":"dbBlock"
         }
       ],
       "constructors":[],
-      "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp"]
+      "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp"],
+      "h_includes": ["dbVector.h"]
     },
     {
       "src":"dbGroup.json"

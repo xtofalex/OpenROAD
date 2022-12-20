@@ -148,6 +148,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModInst& obj)
   stream >> obj._master;
   stream >> obj._group_next;
   stream >> obj._group;
+  stream >> obj._moditerms;
   // User Code Begin >>
   // User Code End >>
   return stream;
@@ -161,6 +162,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbModInst& obj)
   stream << obj._master;
   stream << obj._group_next;
   stream << obj._group;
+  stream << obj._moditerms;
   // User Code Begin <<
   // User Code End <<
   return stream;
@@ -234,7 +236,7 @@ dbModInst* dbModInst::create(dbModule* parentModule,
   block->_modinst_hash.insert(modinst);
 
   // create the moditerms
-  uint modterm_cnt = master->_modterms.size();
+  uint modterm_cnt = masterModule->getTerms().size();
   modinst->_moditerms.resize(modterm_cnt);
 
   return (dbModInst*) modinst;

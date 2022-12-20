@@ -34,8 +34,8 @@
 #pragma once
 
 #include "dbCore.h"
+#include "dbVector.h"
 #include "odb.h"
-
 // User Code Begin Includes
 // User Code End Includes
 
@@ -66,6 +66,7 @@ class _dbModInst : public _dbObject
   dbId<_dbModule> _master;
   dbId<_dbModInst> _group_next;
   dbId<_dbGroup> _group;
+  dbVector<uint> _moditerms;
 
   // User Code Begin Fields
   // User Code End Fields
