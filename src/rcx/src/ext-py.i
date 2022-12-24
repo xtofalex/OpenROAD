@@ -30,63 +30,70 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
-//
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "ord/Tech.h"
-
-#include "db_sta/dbSta.hh"
-#include "odb/db.h"
-#include "odb/lefin.h"
+%{
 #include "ord/OpenRoad.hh"
+#include "rcx/ext.h"
 
-namespace ord {
+using namespace odb;
+using rcx::Ext;
+%}
 
-Tech::Tech()
-{
-  auto app = OpenRoad::openRoad();
-  db_ = app->getDb();
-}
+%include "../../Exception-py.i"
 
-odb::dbDatabase* Tech::getDB()
-{
-  return db_;
-}
+// Just reuse the api defined in ext.i
+%inline %{
 
-void Tech::readLef(const std::string& file_name)
-{
-  auto app = OpenRoad::openRoad();
-  const bool make_tech = db_->getTech() == nullptr;
-  const bool make_library = true;
-  std::string lib_name = file_name;
+void define_process_corner(int ext_model_index, const char* file);
 
-  // Hacky but easier than dealing with stdc++fs linking
-  auto slash_pos = lib_name.find_last_of('/');
-  if (slash_pos != std::string::npos) {
-    lib_name.erase(0, slash_pos + 1);
-  }
-  auto dot_pos = lib_name.find_last_of('.');
-  if (dot_pos != std::string::npos) {
-    lib_name.erase(lib_name.begin() + dot_pos, lib_name.end());
-  }
+void extract(const char* ext_model_file,
+             int corner_cnt,
+             double max_res,
+             float coupling_threshold,
+             int signal_table,
+             int cc_model,
+             int context_depth,
+             const char* debug_net_id,
+             bool lef_res,
+             bool no_merge_via_res);
 
-  app->readLef(file_name.c_str(), lib_name.c_str(), make_tech, make_library);
-}
+void write_spef(const char* file, const char* nets, int net_id);
 
-void Tech::readLiberty(const std::string& file_name)
-{
-  auto sta = OpenRoad::openRoad()->getSta();
-  // TODO: take corner & min/max args
-  sta->readLiberty(file_name.c_str(),
-                   sta->cmdCorner(),
-                   sta::MinMaxAll::all(),
-                   true /* infer_latches */);
-}
+void adjust_rc(double res_factor,
+               double cc_factor,
+               double gndc_factor);
 
-sta::dbSta* Tech::getSta()
-{
-  auto sta = OpenRoad::openRoad()->getSta();
-  return sta;
-}
+void diff_spef(const char* file,
+               bool r_conn,
+               bool r_res,
+               bool r_cap,
+               bool r_cc_cap);
 
-}  // namespace ord
+void bench_wires(bool db_only,
+                 bool over,
+                 bool diag,
+                 bool all,
+                 int met_cnt,
+                 int cnt,
+                 int len,
+                 int under_met,
+                 const char* w_list,
+                 const char* s_list,
+                 int over_dist,
+                 int under_dist);
+
+void bench_verilog(const char* file);
+
+void write_rules(const char* file,
+                 const char* dir,
+                 const char* name,
+                 int pattern,
+                 bool read_from_db,
+                 bool read_from_solver);
+
+void read_spef(const char* file);
+
+%}
+
+

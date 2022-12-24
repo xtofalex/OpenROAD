@@ -216,4 +216,16 @@ par::PartitionMgr* Design::getPartitionMgr()
   return app->getPartitionMgr();
 }
 
+rcx::Ext* Design::getOpenRCX()
+{
+  auto app = OpenRoad::openRoad();
+  return app->getOpenRCX();
+}
+
+rmp::Restructure* Design::getRestructure()
+{
+  auto app = OpenRoad::openRoad();
+  return app->getRestructure();
+}
+
 }  // namespace ord
