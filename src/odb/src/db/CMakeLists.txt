@@ -113,6 +113,7 @@ add_library(db
     dbModTerm.cpp
     dbModITerm.cpp
     dbModNet.cpp
+    dbModInstHeader.cpp
     dbModInst.cpp
     dbGroup.cpp
     dbGCellGrid.cpp

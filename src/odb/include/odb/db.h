@@ -147,6 +147,7 @@ class dbModule;
 class dbModTerm;
 class dbModITerm;
 class dbModNet;
+class dbModInstHeader;
 class dbModInst;
 class dbGroup;
 class dbGCellGrid;
@@ -9124,6 +9125,18 @@ class dbModNet : public dbObject
   ///
   std::string getName() const;
   // User Code End dbModNet
+};
+
+class dbModInstHeader : public dbObject
+{
+ public:
+  // User Code Begin dbModInstHeaderEnums
+  // User Code End dbModInstHeaderEnums
+
+  dbModule* getMaster() const;
+
+  // User Code Begin dbModInstHeader
+  // User Code End dbModInstHeader
 };
 
 class dbModInst : public dbObject
