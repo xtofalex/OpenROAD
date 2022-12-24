@@ -31,7 +31,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 // Generator Code Begin Cpp
-#include "dbModInstHeader.h"
+#include "dbModInstHdr.h"
 
 #include "db.h"
 #include "dbBlock.h"
@@ -44,9 +44,9 @@
 // User Code End Includes
 namespace odb {
 
-template class dbTable<_dbModInstHeader>;
+template class dbTable<_dbModInstHdr>;
 
-bool _dbModInstHeader::operator==(const _dbModInstHeader& rhs) const
+bool _dbModInstHdr::operator==(const _dbModInstHdr& rhs) const
 {
   if (_next_entry != rhs._next_entry)
     return false;
@@ -58,15 +58,15 @@ bool _dbModInstHeader::operator==(const _dbModInstHeader& rhs) const
   // User Code End ==
   return true;
 }
-bool _dbModInstHeader::operator<(const _dbModInstHeader& rhs) const
+bool _dbModInstHdr::operator<(const _dbModInstHdr& rhs) const
 {
   // User Code Begin <
   // User Code End <
   return true;
 }
-void _dbModInstHeader::differences(dbDiff& diff,
-                                   const char* field,
-                                   const _dbModInstHeader& rhs) const
+void _dbModInstHdr::differences(dbDiff& diff,
+                                const char* field,
+                                const _dbModInstHdr& rhs) const
 {
   DIFF_BEGIN
 
@@ -76,7 +76,7 @@ void _dbModInstHeader::differences(dbDiff& diff,
   // User Code End Differences
   DIFF_END
 }
-void _dbModInstHeader::out(dbDiff& diff, char side, const char* field) const
+void _dbModInstHdr::out(dbDiff& diff, char side, const char* field) const
 {
   DIFF_OUT_BEGIN
   DIFF_OUT_FIELD(_next_entry);
@@ -86,12 +86,12 @@ void _dbModInstHeader::out(dbDiff& diff, char side, const char* field) const
   // User Code End Out
   DIFF_END
 }
-_dbModInstHeader::_dbModInstHeader(_dbDatabase* db)
+_dbModInstHdr::_dbModInstHdr(_dbDatabase* db)
 {
   // User Code Begin Constructor
   // User Code End Constructor
 }
-_dbModInstHeader::_dbModInstHeader(_dbDatabase* db, const _dbModInstHeader& r)
+_dbModInstHdr::_dbModInstHdr(_dbDatabase* db, const _dbModInstHdr& r)
 {
   _next_entry = r._next_entry;
   _master = r._master;
@@ -99,7 +99,7 @@ _dbModInstHeader::_dbModInstHeader(_dbDatabase* db, const _dbModInstHeader& r)
   // User Code End CopyConstructor
 }
 
-dbIStream& operator>>(dbIStream& stream, _dbModInstHeader& obj)
+dbIStream& operator>>(dbIStream& stream, _dbModInstHdr& obj)
 {
   stream >> obj._next_entry;
   stream >> obj._master;
@@ -108,7 +108,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModInstHeader& obj)
   // User Code End >>
   return stream;
 }
-dbOStream& operator<<(dbOStream& stream, const _dbModInstHeader& obj)
+dbOStream& operator<<(dbOStream& stream, const _dbModInstHdr& obj)
 {
   stream << obj._next_entry;
   stream << obj._master;
@@ -118,7 +118,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbModInstHeader& obj)
   return stream;
 }
 
-_dbModInstHeader::~_dbModInstHeader()
+_dbModInstHdr::~_dbModInstHdr()
 {
   // User Code Begin Destructor
   // User Code End Destructor
@@ -129,20 +129,20 @@ _dbModInstHeader::~_dbModInstHeader()
 
 ////////////////////////////////////////////////////////////////////
 //
-// dbModInstHeader - Methods
+// dbModInstHdr - Methods
 //
 ////////////////////////////////////////////////////////////////////
 
-dbModule* dbModInstHeader::getMaster() const
+dbModule* dbModInstHdr::getMaster() const
 {
-  _dbModInstHeader* obj = (_dbModInstHeader*) this;
+  _dbModInstHdr* obj = (_dbModInstHdr*) this;
   if (obj->_master == 0)
     return NULL;
   _dbBlock* par = (_dbBlock*) obj->getOwner();
   return (dbModule*) par->_module_tbl->getPtr(obj->_master);
 }
 
-// User Code Begin dbModInstHeaderPublicMethods
-// User Code End dbModInstHeaderPublicMethods
+// User Code Begin dbModInstHdrPublicMethods
+// User Code End dbModInstHdrPublicMethods
 }  // namespace odb
    // Generator Code End Cpp

@@ -40,6 +40,7 @@
 #include "dbGroup.h"
 #include "dbHashTable.hpp"
 #include "dbModITerm.h"
+#include "dbModInstHdr.h"
 #include "dbModule.h"
 #include "dbTable.h"
 #include "dbTable.hpp"
@@ -226,6 +227,7 @@ dbModInst* dbModInst::create(dbModule* parentModule,
   _dbModule* master = (_dbModule*) masterModule;
   if (master->_mod_inst != 0)
     return nullptr;
+  //_dbModInstHdr* inst_hdr = block->_modinst_hdr_hash.find(master->_id);
   _dbModInst* modinst = block->_modinst_tbl->create();
   modinst->_name = strdup(h_name.c_str());
   ZALLOCATED(modinst->_name);

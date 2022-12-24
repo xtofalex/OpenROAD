@@ -86,6 +86,7 @@
 #include "dbLogicPort.h"
 #include "dbModITerm.h"
 #include "dbModInst.h"
+#include "dbModInstHdr.h"
 #include "dbModNet.h"
 #include "dbModNetModTermItr.h"
 #include "dbModTerm.h"
@@ -203,6 +204,9 @@ _dbBlock::_dbBlock(_dbDatabase* db)
 
   _modnet_tbl = new dbTable<_dbModNet>(
       db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbModNetObj);
+
+  _modinst_hdr_tbl = new dbTable<_dbModInstHdr>(
+      db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbModInstHdrObj);
 
   _modinst_tbl = new dbTable<_dbModInst>(
       db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbModInstObj);
@@ -332,6 +336,7 @@ _dbBlock::_dbBlock(_dbDatabase* db)
   _module_hash.setTable(_module_tbl);
   _modterm_hash.setTable(_modterm_tbl);
   _modnet_hash.setTable(_modnet_tbl);
+  _modinst_hdr_hash.setTable(_modinst_hdr_tbl);
   _modinst_hash.setTable(_modinst_tbl);
   _moditerm_hash.setTable(_moditerm_tbl);
   _powerdomain_hash.setTable(_powerdomain_tbl);
@@ -423,6 +428,9 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
       _net_hash(block._net_hash),
       _inst_hash(block._inst_hash),
       _module_hash(block._module_hash),
+      _modterm_hash(block._modterm_hash),
+      _modnet_hash(block._modnet_hash),
+      _modinst_hdr_hash(block._modinst_hdr_hash),
       _modinst_hash(block._modinst_hash),
       _powerdomain_hash(block._powerdomain_hash),
       _logicport_hash(block._logicport_hash),
@@ -460,6 +468,8 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
 
   _modnet_tbl = new dbTable<_dbModNet>(db, this, *block._modnet_tbl);
 
+  _modinst_hdr_tbl = new dbTable<_dbModInstHdr>(db, this, *block._modinst_hdr_tbl);
+  
   _modinst_tbl = new dbTable<_dbModInst>(db, this, *block._modinst_tbl);
 
   _moditerm_tbl = new dbTable<_dbModITerm>(db, this, *block._moditerm_tbl);
@@ -541,6 +551,7 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
   _module_hash.setTable(_module_tbl);
   _modterm_hash.setTable(_modterm_tbl);
   _modnet_hash.setTable(_modnet_tbl);
+  _modinst_hdr_hash.setTable(_modinst_hdr_tbl);
   _modinst_hash.setTable(_modinst_tbl);
   _moditerm_hash.setTable(_moditerm_tbl);
   _group_hash.setTable(_group_tbl);
@@ -628,6 +639,7 @@ _dbBlock::~_dbBlock()
   delete _module_tbl;
   delete _modterm_tbl;
   delete _modnet_tbl;
+  delete _modinst_hdr_tbl;
   delete _modinst_tbl;
   delete _moditerm_tbl;
   delete _powerdomain_tbl;
@@ -797,6 +809,9 @@ dbObjectTable* _dbBlock::getObjectTable(dbObjectType type)
     case dbModNetObj:
       return _modnet_tbl;
 
+    case dbModInstHdrObj:
+      return _modinst_hdr_tbl;
+
     case dbModInstObj:
       return _modinst_tbl;
 
@@ -936,6 +951,9 @@ dbOStream& operator<<(dbOStream& stream, const _dbBlock& block)
   stream << block._net_hash;
   stream << block._inst_hash;
   stream << block._module_hash;
+  stream << block._modterm_hash;
+  stream << block._modnet_hash;
+  stream << block._modinst_hdr_hash;
   stream << block._modinst_hash;
   stream << block._powerdomain_hash;
   stream << block._logicport_hash;
@@ -965,6 +983,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbBlock& block)
   stream << *block._module_tbl;
   stream << *block._modterm_tbl;
   stream << *block._modnet_tbl;
+  stream << *block._modinst_hdr_tbl;
   stream << *block._modinst_tbl;
   stream << *block._moditerm_tbl;
   stream << *block._powerdomain_tbl;
@@ -1042,7 +1061,10 @@ dbIStream& operator>>(dbIStream& stream, _dbBlock& block)
   stream >> block._net_hash;
   stream >> block._inst_hash;
   stream >> block._module_hash;
+  stream >> block._modterm_hash;
+  stream >> block._modnet_hash;
   stream >> block._modinst_hash;
+  stream >> block._modinst_hdr_hash;
   stream >> block._powerdomain_hash;
   stream >> block._logicport_hash;
   stream >> block._powerswitch_hash;
@@ -1065,6 +1087,7 @@ dbIStream& operator>>(dbIStream& stream, _dbBlock& block)
   stream >> *block._module_tbl;
   stream >> *block._modterm_tbl;
   stream >> *block._modnet_tbl;
+  stream >> *block._modinst_hdr_tbl;
   stream >> *block._modinst_tbl;
   stream >> *block._moditerm_tbl;
   stream >> *block._powerdomain_tbl;
@@ -1217,6 +1240,15 @@ bool _dbBlock::operator==(const _dbBlock& rhs) const
   if (_module_hash != rhs._module_hash)
     return false;
 
+  if (_modterm_hash != rhs._modterm_hash)
+    return false;
+
+  if (_modnet_hash != rhs._modnet_hash)
+    return false;
+
+  if (_modinst_hdr_hash != rhs._modinst_hdr_hash)
+    return false;
+
   if (_modinst_hash != rhs._modinst_hash)
     return false;
 
@@ -1284,6 +1316,9 @@ bool _dbBlock::operator==(const _dbBlock& rhs) const
     return false;
 
   if (*_modnet_tbl != *rhs._modnet_tbl)
+    return false;
+
+  if (*_modinst_hdr_tbl != *rhs._modinst_hdr_tbl)
     return false;
 
   if (*_modinst_tbl != *rhs._modinst_tbl)
@@ -1417,6 +1452,9 @@ void _dbBlock::differences(dbDiff& diff,
     DIFF_HASH_TABLE(_net_hash);
     DIFF_HASH_TABLE(_inst_hash);
     DIFF_HASH_TABLE(_module_hash);
+    DIFF_HASH_TABLE(_modterm_hash);
+    DIFF_HASH_TABLE(_modnet_hash);
+    DIFF_HASH_TABLE(_modinst_hdr_hash);
     DIFF_HASH_TABLE(_modinst_hash);
     DIFF_HASH_TABLE(_powerdomain_hash);
     DIFF_HASH_TABLE(_logicport_hash);
@@ -1442,6 +1480,7 @@ void _dbBlock::differences(dbDiff& diff,
   DIFF_TABLE(_module_tbl);
   DIFF_TABLE(_modterm_tbl);
   DIFF_TABLE(_modnet_tbl);
+  DIFF_TABLE(_modinst_hdr_tbl);
   DIFF_TABLE(_modinst_tbl);
   DIFF_TABLE(_moditerm_tbl);
   DIFF_TABLE(_powerdomain_tbl);
@@ -1513,6 +1552,9 @@ void _dbBlock::out(dbDiff& diff, char side, const char* field) const
     DIFF_OUT_HASH_TABLE(_net_hash);
     DIFF_OUT_HASH_TABLE(_inst_hash);
     DIFF_OUT_HASH_TABLE(_module_hash);
+    DIFF_OUT_HASH_TABLE(_modterm_hash);
+    DIFF_OUT_HASH_TABLE(_modnet_hash);
+    DIFF_OUT_HASH_TABLE(_modinst_hdr_hash);
     DIFF_OUT_HASH_TABLE(_modinst_hash);
     DIFF_OUT_HASH_TABLE(_powerdomain_hash);
     DIFF_OUT_HASH_TABLE(_logicport_hash);

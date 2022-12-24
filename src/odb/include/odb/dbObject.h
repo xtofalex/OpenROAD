@@ -111,7 +111,7 @@ enum dbObjectType
   dbModTermObj,
   dbModITermObj,
   dbModNetObj,
-  dbModInstHeaderObj,
+  dbModInstHdrObj,
   dbModInstObj,
   dbGroupObj,
   dbGCellGridObj,

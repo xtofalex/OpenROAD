@@ -232,12 +232,12 @@
       "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp"]
     },
     {
-      "name":"dbModInstHeader",
+      "name":"dbModInstHdr",
       "type":"dbObject",
       "fields":[
         {
           "name":"_next_entry",
-          "type":"dbId<_dbModInstHeader>",
+          "type":"dbId<_dbModInstHdr>",
           "flags":["no-set","no-get"]
         },
         {
@@ -309,7 +309,7 @@
         }
       ],
       "constructors":[],
-      "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp","dbGroup.h","dbModITerm.h"],
+      "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp","dbGroup.h","dbModITerm.h","dbModInstHdr.h"],
       "h_includes": ["dbVector.h"]
     },
     {

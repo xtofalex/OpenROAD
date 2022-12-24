@@ -147,7 +147,7 @@ class dbModule;
 class dbModTerm;
 class dbModITerm;
 class dbModNet;
-class dbModInstHeader;
+class dbModInstHdr;
 class dbModInst;
 class dbGroup;
 class dbGCellGrid;
@@ -9127,16 +9127,16 @@ class dbModNet : public dbObject
   // User Code End dbModNet
 };
 
-class dbModInstHeader : public dbObject
+class dbModInstHdr : public dbObject
 {
  public:
-  // User Code Begin dbModInstHeaderEnums
-  // User Code End dbModInstHeaderEnums
+  // User Code Begin dbModInstHdrEnums
+  // User Code End dbModInstHdrEnums
 
   dbModule* getMaster() const;
 
-  // User Code Begin dbModInstHeader
-  // User Code End dbModInstHeader
+  // User Code Begin dbModInstHdr
+  // User Code End dbModInstHdr
 };
 
 class dbModInst : public dbObject

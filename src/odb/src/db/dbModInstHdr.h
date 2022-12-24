@@ -53,36 +53,33 @@ class _dbModTerm;
 // User Code Begin Structs
 // User Code End Structs
 
-class _dbModInstHeader : public _dbObject
+class _dbModInstHdr : public _dbObject
 {
  public:
   // User Code Begin Enums
   // User Code End Enums
 
-  dbId<_dbModInstHeader> _next_entry;
+  dbId<_dbModInstHdr> _next_entry;
   dbId<_dbModule> _master;
   dbVector<dbId<_dbModTerm>> _modterms;
 
   // User Code Begin Fields
   // User Code End Fields
-  _dbModInstHeader(_dbDatabase*, const _dbModInstHeader& r);
-  _dbModInstHeader(_dbDatabase*);
-  ~_dbModInstHeader();
-  bool operator==(const _dbModInstHeader& rhs) const;
-  bool operator!=(const _dbModInstHeader& rhs) const
-  {
-    return !operator==(rhs);
-  }
-  bool operator<(const _dbModInstHeader& rhs) const;
+  _dbModInstHdr(_dbDatabase*, const _dbModInstHdr& r);
+  _dbModInstHdr(_dbDatabase*);
+  ~_dbModInstHdr();
+  bool operator==(const _dbModInstHdr& rhs) const;
+  bool operator!=(const _dbModInstHdr& rhs) const { return !operator==(rhs); }
+  bool operator<(const _dbModInstHdr& rhs) const;
   void differences(dbDiff& diff,
                    const char* field,
-                   const _dbModInstHeader& rhs) const;
+                   const _dbModInstHdr& rhs) const;
   void out(dbDiff& diff, char side, const char* field) const;
   // User Code Begin Methods
   // User Code End Methods
 };
-dbIStream& operator>>(dbIStream& stream, _dbModInstHeader& obj);
-dbOStream& operator<<(dbOStream& stream, const _dbModInstHeader& obj);
+dbIStream& operator>>(dbIStream& stream, _dbModInstHdr& obj);
+dbOStream& operator<<(dbOStream& stream, const _dbModInstHdr& obj);
 // User Code Begin General
 // User Code End General
 }  // namespace odb
