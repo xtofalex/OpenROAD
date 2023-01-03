@@ -48,6 +48,9 @@ template class dbTable<_dbModInstHdr>;
 
 bool _dbModInstHdr::operator==(const _dbModInstHdr& rhs) const
 {
+  if (_id != rhs._id)
+    return false;
+
   if (_next_entry != rhs._next_entry)
     return false;
 
@@ -70,6 +73,7 @@ void _dbModInstHdr::differences(dbDiff& diff,
 {
   DIFF_BEGIN
 
+  DIFF_FIELD(_id);
   DIFF_FIELD(_next_entry);
   DIFF_FIELD(_master);
   // User Code Begin Differences
@@ -79,6 +83,7 @@ void _dbModInstHdr::differences(dbDiff& diff,
 void _dbModInstHdr::out(dbDiff& diff, char side, const char* field) const
 {
   DIFF_OUT_BEGIN
+  DIFF_OUT_FIELD(_id);
   DIFF_OUT_FIELD(_next_entry);
   DIFF_OUT_FIELD(_master);
 
@@ -93,6 +98,7 @@ _dbModInstHdr::_dbModInstHdr(_dbDatabase* db)
 }
 _dbModInstHdr::_dbModInstHdr(_dbDatabase* db, const _dbModInstHdr& r)
 {
+  _id = r._id;
   _next_entry = r._next_entry;
   _master = r._master;
   // User Code Begin CopyConstructor
@@ -101,6 +107,7 @@ _dbModInstHdr::_dbModInstHdr(_dbDatabase* db, const _dbModInstHdr& r)
 
 dbIStream& operator>>(dbIStream& stream, _dbModInstHdr& obj)
 {
+  stream >> obj._id;
   stream >> obj._next_entry;
   stream >> obj._master;
   stream >> obj._modterms;
@@ -110,6 +117,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModInstHdr& obj)
 }
 dbOStream& operator<<(dbOStream& stream, const _dbModInstHdr& obj)
 {
+  stream << obj._id;
   stream << obj._next_entry;
   stream << obj._master;
   stream << obj._modterms;

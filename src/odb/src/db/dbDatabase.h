@@ -93,6 +93,7 @@ class _dbDatabase : public _dbObject
   uint _schema_major;
   uint _schema_minor;
   uint _master_id;  // for a unique id across all libraries
+  uint _module_id;  // for a unique id across all libraries
   dbId<_dbChip> _chip;
   dbId<_dbTech> _tech;
 

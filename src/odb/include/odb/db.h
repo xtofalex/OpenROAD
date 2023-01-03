@@ -9009,6 +9009,7 @@ class dbModule : public dbObject
  public:
   // User Code Begin dbModuleEnums
   // User Code End dbModuleEnums
+
   const char* getName() const;
 
   dbModInst* getModInst() const;

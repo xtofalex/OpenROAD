@@ -156,6 +156,7 @@ template class dbTable<_dbBlock>;
 template class dbHashTable<_dbNet>;
 template class dbHashTable<_dbInst>;
 template class dbIntHashTable<_dbInstHdr>;
+template class dbIntHashTable<_dbModInstHdr>;
 template class dbHashTable<_dbBTerm>;
 
 _dbBlock::_dbBlock(_dbDatabase* db)

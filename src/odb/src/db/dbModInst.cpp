@@ -227,7 +227,7 @@ dbModInst* dbModInst::create(dbModule* parentModule,
   _dbModule* master = (_dbModule*) masterModule;
   if (master->_mod_inst != 0)
     return nullptr;
-  //_dbModInstHdr* inst_hdr = block->_modinst_hdr_hash.find(master->_id);
+  _dbModInstHdr* inst_hdr = block->_modinst_hdr_hash.find(master->_id);
   _dbModInst* modinst = block->_modinst_tbl->create();
   modinst->_name = strdup(h_name.c_str());
   ZALLOCATED(modinst->_name);

@@ -59,6 +59,11 @@
       "type":"dbObject",
       "fields":[
         {
+          "name":"_id",
+          "type":"uint",
+          "flags":["no-set","no-get"]
+        },
+        {
           "name":"_name",
           "type":"char *",
           "flags":["no-set"]
@@ -235,6 +240,11 @@
       "name":"dbModInstHdr",
       "type":"dbObject",
       "fields":[
+        {
+          "name":"_id",
+          "type":"uint",
+          "flags":["no-set","no-get"]
+        },
         {
           "name":"_next_entry",
           "type":"dbId<_dbModInstHdr>",

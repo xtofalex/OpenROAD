@@ -59,6 +59,9 @@ template class dbTable<_dbModule>;
 
 bool _dbModule::operator==(const _dbModule& rhs) const
 {
+  if (_id != rhs._id)
+    return false;
+
   if (_name != rhs._name)
     return false;
 
@@ -98,6 +101,7 @@ void _dbModule::differences(dbDiff& diff,
 {
   DIFF_BEGIN
 
+  DIFF_FIELD(_id);
   DIFF_FIELD(_name);
   DIFF_FIELD(_next_entry);
   DIFF_FIELD(_insts);
@@ -112,6 +116,7 @@ void _dbModule::differences(dbDiff& diff,
 void _dbModule::out(dbDiff& diff, char side, const char* field) const
 {
   DIFF_OUT_BEGIN
+  DIFF_OUT_FIELD(_id);
   DIFF_OUT_FIELD(_name);
   DIFF_OUT_FIELD(_next_entry);
   DIFF_OUT_FIELD(_insts);
@@ -136,6 +141,7 @@ _dbModule::_dbModule(_dbDatabase* db)
 }
 _dbModule::_dbModule(_dbDatabase* db, const _dbModule& r)
 {
+  _id = r._id;
   _name = r._name;
   _next_entry = r._next_entry;
   _insts = r._insts;
@@ -149,6 +155,7 @@ _dbModule::_dbModule(_dbDatabase* db, const _dbModule& r)
 
 dbIStream& operator>>(dbIStream& stream, _dbModule& obj)
 {
+  stream >> obj._id;
   stream >> obj._name;
   stream >> obj._next_entry;
   stream >> obj._insts;
@@ -162,6 +169,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModule& obj)
 }
 dbOStream& operator<<(dbOStream& stream, const _dbModule& obj)
 {
+  stream << obj._id;
   stream << obj._name;
   stream << obj._next_entry;
   stream << obj._insts;

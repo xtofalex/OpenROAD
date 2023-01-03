@@ -191,7 +191,7 @@ class _dbBlock : public _dbObject
   dbHashTable<_dbModule> _module_hash;
   dbHashTable<_dbModTerm> _modterm_hash;
   dbHashTable<_dbModNet> _modnet_hash;
-  dbHashTable<_dbModInstHdr> _modinst_hdr_hash;
+  dbIntHashTable<_dbModInstHdr> _modinst_hdr_hash;
   dbHashTable<_dbModInst> _modinst_hash;
   dbHashTable<_dbModITerm> _moditerm_hash;
   dbHashTable<_dbPowerDomain> _powerdomain_hash;

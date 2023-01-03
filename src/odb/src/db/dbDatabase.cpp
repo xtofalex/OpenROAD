@@ -84,6 +84,9 @@ bool _dbDatabase::operator==(const _dbDatabase& rhs) const
   if (_master_id != rhs._master_id)
     return false;
 
+  if (_module_id != rhs._module_id)
+    return false;
+
   if (_chip != rhs._chip)
     return false;
 
@@ -114,6 +117,7 @@ void _dbDatabase::differences(dbDiff& diff,
 {
   DIFF_BEGIN
   DIFF_FIELD(_master_id);
+  DIFF_FIELD(_module_id);
   DIFF_FIELD(_chip);
   DIFF_FIELD(_tech);
   DIFF_TABLE_NO_DEEP(_tech_tbl);
@@ -128,6 +132,7 @@ void _dbDatabase::out(dbDiff& diff, char side, const char* field) const
 {
   DIFF_OUT_BEGIN
   DIFF_OUT_FIELD(_master_id);
+  DIFF_OUT_FIELD(_module_id);
   DIFF_OUT_FIELD(_chip);
   DIFF_OUT_FIELD(_tech);
   DIFF_OUT_TABLE_NO_DEEP(_tech_tbl);
@@ -175,6 +180,7 @@ _dbDatabase::_dbDatabase(_dbDatabase* /* unused: db */)
   _schema_major = db_schema_major;
   _schema_minor = db_schema_minor;
   _master_id = 0;
+  _module_id = 0;
   _file = NULL;
   _logger = nullptr;
   _unique_id = db_unique_id++;
@@ -208,6 +214,7 @@ _dbDatabase::_dbDatabase(_dbDatabase* /* unused: db */, int id)
   _schema_major = db_schema_major;
   _schema_minor = db_schema_minor;
   _master_id = 0;
+  _module_id = 0;
   _file = NULL;
   _logger = nullptr;
   _unique_id = id;
@@ -236,6 +243,7 @@ _dbDatabase::_dbDatabase(_dbDatabase* /* unused: db */, const _dbDatabase& d)
       _schema_major(d._schema_major),
       _schema_minor(d._schema_minor),
       _master_id(d._master_id),
+      _module_id(d._module_id),
       _chip(d._chip),
       _tech(d._tech),
       _unique_id(db_unique_id++),
@@ -281,6 +289,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbDatabase& db)
   stream << db._schema_major;
   stream << db._schema_minor;
   stream << db._master_id;
+  stream << db._module_id;
   stream << db._chip;
   stream << db._tech;
   stream << *db._tech_tbl;
@@ -314,6 +323,7 @@ dbIStream& operator>>(dbIStream& stream, _dbDatabase& db)
     throw ZException("incompatible database schema revision");
 
   stream >> db._master_id;
+  stream >> db._module_id;
 
   stream >> db._chip;
   stream >> db._tech;

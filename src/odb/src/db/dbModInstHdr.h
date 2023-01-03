@@ -59,6 +59,7 @@ class _dbModInstHdr : public _dbObject
   // User Code Begin Enums
   // User Code End Enums
 
+  uint _id;
   dbId<_dbModInstHdr> _next_entry;
   dbId<_dbModule> _master;
   dbVector<dbId<_dbModTerm>> _modterms;
