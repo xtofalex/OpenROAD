@@ -9137,6 +9137,7 @@ class dbModInstHdr : public dbObject
   dbModule* getMaster() const;
 
   // User Code Begin dbModInstHdr
+  static dbModInstHdr* create(dbBlock* block, dbModule* master);
   // User Code End dbModInstHdr
 };
 

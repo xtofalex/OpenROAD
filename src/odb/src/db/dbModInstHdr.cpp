@@ -94,6 +94,7 @@ void _dbModInstHdr::out(dbDiff& diff, char side, const char* field) const
 _dbModInstHdr::_dbModInstHdr(_dbDatabase* db)
 {
   // User Code Begin Constructor
+  _id = 0;
   // User Code End Constructor
 }
 _dbModInstHdr::_dbModInstHdr(_dbDatabase* db, const _dbModInstHdr& r)
@@ -151,6 +152,51 @@ dbModule* dbModInstHdr::getMaster() const
 }
 
 // User Code Begin dbModInstHdrPublicMethods
+dbModInstHdr* dbModInstHdr::create(dbBlock* block_, dbModule* masterModule_) {
+  _dbBlock* block = (_dbBlock*) block_;
+  _dbModule* masterModule = (_dbModule*) masterModule_;
+
+  if (block->_modinst_hdr_hash.hasMember(masterModule->_id))
+    return NULL;
+
+  _dbModInstHdr* inst_hdr;
+  // initialize the inst_hdr structure
+  inst_hdr = block->_modinst_hdr_tbl->create();
+  inst_hdr->_id = masterModule->_id;
+  inst_hdr->_master = masterModule->getOID();
+
+  // insert the inst_hdr into the block modinst_hdr hash table.
+  block->_modinst_hdr_hash.insert(inst_hdr);
+
+  //
+  // Copied from dbInstHdr.cpp
+  // Each ITerm of and instances points back the MTerm the ITerm
+  // represents. To save space in the ITerm and to make the order
+  // of the ITerm of an instance appear as {output, inout, input},
+  // a mapping structure is used. This structure maps offset of an ITerm
+  // back to MTerm. The mapping vector is ordered as {output, inout, input}.
+  // The alternative to this strategy would be to enforce a create order
+  // on the creation of MTerms on a Master. This stragegy complicates the
+  // creation of MTerms with streamed input formats such as LEF, because
+  // one does not know the order of MTerms as they would be created.
+  // Consequently, you would need to buffer the data of a master, i.e., a LEF
+  // MACRO until the complete MACRO is parsed...
+  //
+  uint modterm_cnt = masterModule_->getTerms().size();
+  inst_hdr->_modterms.resize(modterm_cnt);
+
+  // modterms, this set is ordered: {output, inout, input}
+  dbSet<dbModTerm> modterms = masterModule_->getTerms();
+
+  dbSet<dbModTerm>::iterator itr;
+  int i = 0;
+  for (itr = modterms.begin(); itr != modterms.end(); ++itr) {
+    dbModTerm* modterm = *itr;
+    inst_hdr->_modterms[i++] = modterm->getImpl()->getOID();
+  }
+
+  return (dbModInstHdr*) inst_hdr;
+}
 // User Code End dbModInstHdrPublicMethods
 }  // namespace odb
    // Generator Code End Cpp
