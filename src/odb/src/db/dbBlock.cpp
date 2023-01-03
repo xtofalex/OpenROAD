@@ -469,8 +469,9 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
 
   _modnet_tbl = new dbTable<_dbModNet>(db, this, *block._modnet_tbl);
 
-  _modinst_hdr_tbl = new dbTable<_dbModInstHdr>(db, this, *block._modinst_hdr_tbl);
-  
+  _modinst_hdr_tbl
+      = new dbTable<_dbModInstHdr>(db, this, *block._modinst_hdr_tbl);
+
   _modinst_tbl = new dbTable<_dbModInst>(db, this, *block._modinst_tbl);
 
   _moditerm_tbl = new dbTable<_dbModITerm>(db, this, *block._moditerm_tbl);
