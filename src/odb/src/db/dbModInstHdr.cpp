@@ -152,7 +152,8 @@ dbModule* dbModInstHdr::getMaster() const
 }
 
 // User Code Begin dbModInstHdrPublicMethods
-dbModInstHdr* dbModInstHdr::create(dbBlock* block_, dbModule* masterModule_) {
+dbModInstHdr* dbModInstHdr::create(dbBlock* block_, dbModule* masterModule_)
+{
   _dbBlock* block = (_dbBlock*) block_;
   _dbModule* masterModule = (_dbModule*) masterModule_;
 

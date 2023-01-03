@@ -229,8 +229,8 @@ dbModInst* dbModInst::create(dbModule* parentModule,
     return nullptr;
   _dbModInstHdr* inst_hdr = block->_modinst_hdr_hash.find(master->_id);
   if (inst_hdr == NULL) {
-    inst_hdr
-        = (_dbModInstHdr*) dbModInstHdr::create((dbBlock*) block, (dbModule*) master);
+    inst_hdr = (_dbModInstHdr*) dbModInstHdr::create((dbBlock*) block,
+                                                     (dbModule*) master);
     ZASSERT(inst_hdr);
   }
 
