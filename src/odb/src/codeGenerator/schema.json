@@ -563,7 +563,7 @@
       "reversible": "false",
       "orderReversed": "false",
       "sequential": 0,
-      "includes": []
+      "includes": ["dbModInst.h","dbBlock.h"]
     },
     {
       "name": "dbGroupModInstItr",

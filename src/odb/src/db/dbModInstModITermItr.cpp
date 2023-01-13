@@ -33,7 +33,9 @@
 // Generator Code Begin Cpp
 #include "dbModInstModITermItr.h"
 
+#include "dbBlock.h"
 #include "dbModITerm.h"
+#include "dbModInst.h"
 #include "dbTable.h"
 // User Code Begin Includes
 // User Code End Includes
@@ -83,6 +85,12 @@ uint dbModInstModITermItr::size(dbObject* parent)
 uint dbModInstModITermItr::begin(dbObject* parent)
 {
   // User Code Begin begin
+  _dbModInst* inst = (_dbModInst*) parent;
+
+  if (inst->_moditerms.size() == 0)
+    return 0;
+
+  return inst->_moditerms[0];
   // User Code End begin
 }
 
@@ -94,6 +102,17 @@ uint dbModInstModITermItr::end(dbObject* /* unused: parent */)
 uint dbModInstModITermItr::next(uint id, ...)
 {
   // User Code Begin next
+  _dbModITerm* iterm = _moditerm_tbl->getPtr(id);
+  _dbBlock* block = (_dbBlock*) iterm->getOwner();
+  _dbModInst* inst = block->_modinst_tbl->getPtr(iterm->_inst);
+  uint cnt = inst->_moditerms.size();
+  uint idx = iterm->_flags._modterm_idx + 1;
+
+  if (idx == cnt)
+    return 0;
+
+  dbId<_dbModITerm> next = inst->_moditerms[idx];
+  return next;
   // User Code End next
 }
 
