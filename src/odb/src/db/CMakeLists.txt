@@ -128,6 +128,7 @@ add_library(db
     dbModuleModNetItr.cpp
     dbModuleModInstItr.cpp
     dbModNetModTermItr.cpp
+    dbModInstModITermItr.cpp
     dbGroupModInstItr.cpp
     dbGroupItr.cpp
     dbRegionGroupItr.cpp

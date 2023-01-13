@@ -9167,6 +9167,11 @@ class dbModInst : public dbObject
   std::string getName() const;
 
   std::string getHierarchicalName() const;
+
+  ///
+  /// Get the instance-terminals of this instance.
+  ///
+  dbSet<dbModITerm> getITerms();
   // User Code End dbModInst
 };
 

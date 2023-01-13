@@ -105,6 +105,14 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   BOOST_TEST(parent_mod->getChildren().size() == 1);
   // dbBlock::getModInsts()
   BOOST_TEST(block->getModInsts().size() == 1);
+
+  BOOST_TEST(modInst->getITerms().size() == 1);
+
+
+
+
+
+
   // dbInst <--> dbModule
   auto inst1 = dbInst::create(block, lib->findMaster("and2"), "inst1");
   auto inst2 = dbInst::create(block, lib->findMaster("and2"), "inst2");

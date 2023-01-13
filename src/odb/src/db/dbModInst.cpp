@@ -41,6 +41,7 @@
 #include "dbHashTable.hpp"
 #include "dbModITerm.h"
 #include "dbModInstHdr.h"
+#include "dbModInstModITermItr.h"
 #include "dbModule.h"
 #include "dbTable.h"
 #include "dbTable.hpp"
@@ -325,6 +326,14 @@ std::string dbModInst::getHierarchicalName() const
   else
     return parent->getModInst()->getHierarchicalName() + "/" + inst_name;
 }
+
+dbSet<dbModITerm> dbModInst::getITerms()
+{
+  _dbModInst* inst = (_dbModInst*) this;
+  _dbBlock* block = (_dbBlock*) inst->getOwner();
+  return dbSet<dbModITerm>(inst, block->_modinst_moditerm_itr);
+}
+
 // User Code End dbModInstPublicMethods
 }  // namespace odb
    // Generator Code End Cpp

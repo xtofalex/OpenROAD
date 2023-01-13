@@ -38,10 +38,10 @@
 #include "dbDatabase.h"
 #include "dbDiff.hpp"
 #include "dbModInst.h"
+#include "dbModNet.h"
 #include "dbTable.h"
 #include "dbTable.hpp"
 // User Code Begin Includes
-#include "dbModNet.h"
 // User Code End Includes
 namespace odb {
 
@@ -65,12 +65,16 @@ bool _dbModITerm::operator==(const _dbModITerm& rhs) const
     return false;
 
   // User Code Begin ==
+  if (_flags._modterm_idx != rhs._flags._modterm_idx)
+    return false;
   // User Code End ==
   return true;
 }
 bool _dbModITerm::operator<(const _dbModITerm& rhs) const
 {
   // User Code Begin <
+  if (_flags._modterm_idx > rhs._flags._modterm_idx)
+    return false;
   // User Code End <
   return true;
 }
@@ -86,6 +90,7 @@ void _dbModITerm::differences(dbDiff& diff,
   DIFF_FIELD(_next_entry);
   DIFF_FIELD(_inst);
   // User Code Begin Differences
+  DIFF_FIELD(_flags._modterm_idx);
   // User Code End Differences
   DIFF_END
 }
@@ -99,12 +104,14 @@ void _dbModITerm::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_FIELD(_inst);
 
   // User Code Begin Out
+  DIFF_OUT_FIELD(_flags._modterm_idx);
   // User Code End Out
   DIFF_END
 }
 _dbModITerm::_dbModITerm(_dbDatabase* db)
 {
   // User Code Begin Constructor
+  _flags._modterm_idx = 0;
   // User Code End Constructor
 }
 _dbModITerm::_dbModITerm(_dbDatabase* db, const _dbModITerm& r)
@@ -115,6 +122,7 @@ _dbModITerm::_dbModITerm(_dbDatabase* db, const _dbModITerm& r)
   _next_entry = r._next_entry;
   _inst = r._inst;
   // User Code Begin CopyConstructor
+  _flags._modterm_idx = r._flags._modterm_idx;
   // User Code End CopyConstructor
 }
 
@@ -126,6 +134,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModITerm& obj)
   stream >> obj._next_entry;
   stream >> obj._inst;
   // User Code Begin >>
+  stream >> obj._flags._modterm_idx;
   // User Code End >>
   return stream;
 }
@@ -137,6 +146,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbModITerm& obj)
   stream << obj._next_entry;
   stream << obj._inst;
   // User Code Begin <<
+  stream << obj._flags._modterm_idx;
   // User Code End <<
   return stream;
 }
