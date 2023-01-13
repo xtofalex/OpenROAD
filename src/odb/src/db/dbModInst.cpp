@@ -42,6 +42,7 @@
 #include "dbModITerm.h"
 #include "dbModInstHdr.h"
 #include "dbModInstModITermItr.h"
+#include "dbModTerm.h"
 #include "dbModule.h"
 #include "dbTable.h"
 #include "dbTable.hpp"
@@ -253,7 +254,7 @@ dbModInst* dbModInst::create(dbModule* parentModule,
   for (i = 0; i < modterm_cnt; ++i) {
     _dbModITerm* iterm = block->_moditerm_tbl->create();
     modinst->_moditerms[i] = iterm->getOID();
-    // iterm->_flags._mterm_idx = i;
+    iterm->_flags._modterm_idx = i;
     iterm->_inst = modinst->getOID();
   }
 
@@ -332,6 +333,20 @@ dbSet<dbModITerm> dbModInst::getITerms()
   _dbModInst* inst = (_dbModInst*) this;
   _dbBlock* block = (_dbBlock*) inst->getOwner();
   return dbSet<dbModITerm>(inst, block->_modinst_moditerm_itr);
+}
+
+dbModITerm* dbModInst::findITerm(const char* name)
+{
+  _dbModInst* inst = (_dbModInst*) this;
+  _dbBlock* block = (_dbBlock*) inst->getOwner();
+  dbModule* master = getMaster();
+  _dbModTerm* mterm = (_dbModTerm*) master->findModTerm(name);
+
+  if (mterm == NULL)
+    return NULL;
+
+  return (dbModITerm*) block->_moditerm_tbl->getPtr(
+      inst->_moditerms[mterm->_order_id]);
 }
 
 // User Code End dbModInstPublicMethods

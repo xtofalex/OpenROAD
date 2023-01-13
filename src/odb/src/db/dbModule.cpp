@@ -65,6 +65,9 @@ bool _dbModule::operator==(const _dbModule& rhs) const
   if (_name != rhs._name)
     return false;
 
+  if (_frozen != rhs._frozen)
+    return false;
+
   if (_next_entry != rhs._next_entry)
     return false;
 
@@ -103,6 +106,7 @@ void _dbModule::differences(dbDiff& diff,
 
   DIFF_FIELD(_id);
   DIFF_FIELD(_name);
+  DIFF_FIELD(_frozen);
   DIFF_FIELD(_next_entry);
   DIFF_FIELD(_insts);
   DIFF_FIELD(_modterms);
@@ -118,6 +122,7 @@ void _dbModule::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_BEGIN
   DIFF_OUT_FIELD(_id);
   DIFF_OUT_FIELD(_name);
+  DIFF_OUT_FIELD(_frozen);
   DIFF_OUT_FIELD(_next_entry);
   DIFF_OUT_FIELD(_insts);
   DIFF_OUT_FIELD(_modterms);
@@ -143,6 +148,7 @@ _dbModule::_dbModule(_dbDatabase* db, const _dbModule& r)
 {
   _id = r._id;
   _name = r._name;
+  _frozen = r._frozen;
   _next_entry = r._next_entry;
   _insts = r._insts;
   _modterms = r._modterms;
@@ -157,6 +163,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModule& obj)
 {
   stream >> obj._id;
   stream >> obj._name;
+  stream >> obj._frozen;
   stream >> obj._next_entry;
   stream >> obj._insts;
   stream >> obj._modterms;
@@ -171,6 +178,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbModule& obj)
 {
   stream << obj._id;
   stream << obj._name;
+  stream << obj._frozen;
   stream << obj._next_entry;
   stream << obj._insts;
   stream << obj._modterms;
@@ -215,6 +223,27 @@ dbModInst* dbModule::getModInst() const
 }
 
 // User Code Begin dbModulePublicMethods
+void dbModule::setFrozen()
+{
+  _dbModule* module = (_dbModule*) this;
+
+  if (module->_frozen == 1)
+    return;
+
+  module->_frozen = 1;
+
+  // set the order id on the mterm.
+  // this id is used to index mterms on a inst-hdr
+  dbSet<dbModTerm> mterms = getTerms();
+  dbSet<dbModTerm>::iterator itr;
+  int i = 0;
+
+  for (itr = mterms.begin(); itr != mterms.end(); ++itr) {
+    _dbModTerm* mterm = (_dbModTerm*) *itr;
+    mterm->_order_id = i++;
+  }
+}
+
 dbSet<dbModTerm> dbModule::getTerms()
 {
   _dbModule* module = (_dbModule*) this;

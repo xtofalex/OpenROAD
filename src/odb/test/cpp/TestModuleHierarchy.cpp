@@ -106,7 +106,7 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   // dbBlock::getModInsts()
   BOOST_TEST(block->getModInsts().size() == 1);
 
-  BOOST_TEST(modInst->getITerms().size() == 1);
+  BOOST_TEST(modInst->getITerms().size() == 3);
 
 
 

@@ -70,6 +70,7 @@ class _dbModTerm : public _dbObject
   dbId<_dbModTerm> _next_modterm;
   dbId<_dbModTerm> _prev_modterm;
   _dbModTermFlags _flags;
+  uint _order_id;
   dbId<_dbModTerm> _next_entry;
   dbId<_dbModule> _parent;
   dbId<_dbModTerm> _module_next;

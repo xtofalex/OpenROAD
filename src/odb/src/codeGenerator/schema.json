@@ -69,6 +69,11 @@
           "flags":["no-set"]
         },
         {
+          "name":"_frozen",
+          "type":"uint",
+          "flags":["no-set","no-get"]
+        },
+        {
           "name":"_next_entry",
           "type":"dbId<_dbModule>",
           "flags":["no-set","no-get"]
@@ -134,6 +139,11 @@
         {
           "name":"_flags",
           "type":"_dbModTermFlags",
+          "flags":["no-set","no-get"]
+        },
+        {
+          "name":"_order_id",
+          "type":"uint",
           "flags":["no-set","no-get"]
         },
         {
@@ -319,7 +329,7 @@
         }
       ],
       "constructors":[],
-      "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp","dbGroup.h","dbModITerm.h","dbModInstHdr.h","dbModInstModITermItr.h"],
+      "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp","dbGroup.h","dbModTerm.h","dbModITerm.h","dbModInstHdr.h","dbModInstModITermItr.h"],
       "h_includes": ["dbVector.h"]
     },
     {

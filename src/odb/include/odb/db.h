@@ -9035,6 +9035,13 @@ class dbModule : public dbObject
 
   std::vector<dbInst*> getLeafInsts();
 
+  ///
+  /// Freeze this module. dbModTerms cannot be added or delete from the master
+  /// once it is frozen.
+  /// Use before any instantiation
+  ///
+  void setFrozen();
+
   static dbModule* create(dbBlock* block, const char* name);
 
   static void destroy(dbModule* module);
@@ -9172,6 +9179,12 @@ class dbModInst : public dbObject
   /// Get the instance-terminals of this instance.
   ///
   dbSet<dbModITerm> getITerms();
+
+  ///
+  /// Find the iterm of the given terminal name.
+  /// Returns NULL if no terminal was found.
+  ///
+  dbModITerm* findITerm(const char* name);
   // User Code End dbModInst
 };
 

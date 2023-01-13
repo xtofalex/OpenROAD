@@ -62,6 +62,9 @@ bool _dbModTerm::operator==(const _dbModTerm& rhs) const
   if (_prev_modterm != rhs._prev_modterm)
     return false;
 
+  if (_order_id != rhs._order_id)
+    return false;
+
   if (_next_entry != rhs._next_entry)
     return false;
 
@@ -95,6 +98,7 @@ void _dbModTerm::differences(dbDiff& diff,
   DIFF_FIELD(_net);
   DIFF_FIELD(_next_modterm);
   DIFF_FIELD(_prev_modterm);
+  DIFF_FIELD(_order_id);
   DIFF_FIELD(_next_entry);
   DIFF_FIELD(_parent);
   DIFF_FIELD(_module_next);
@@ -110,6 +114,7 @@ void _dbModTerm::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_FIELD(_net);
   DIFF_OUT_FIELD(_next_modterm);
   DIFF_OUT_FIELD(_prev_modterm);
+  DIFF_OUT_FIELD(_order_id);
   DIFF_OUT_FIELD(_next_entry);
   DIFF_OUT_FIELD(_parent);
   DIFF_OUT_FIELD(_module_next);
@@ -135,6 +140,7 @@ _dbModTerm::_dbModTerm(_dbDatabase* db, const _dbModTerm& r)
   _net = r._net;
   _next_modterm = r._next_modterm;
   _prev_modterm = r._prev_modterm;
+  _order_id = r._order_id;
   _next_entry = r._next_entry;
   _parent = r._parent;
   _module_next = r._module_next;
@@ -149,6 +155,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModTerm& obj)
   stream >> obj._net;
   stream >> obj._next_modterm;
   stream >> obj._prev_modterm;
+  stream >> obj._order_id;
   stream >> obj._next_entry;
   stream >> obj._parent;
   stream >> obj._module_next;
@@ -164,6 +171,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbModTerm& obj)
   stream << obj._net;
   stream << obj._next_modterm;
   stream << obj._prev_modterm;
+  stream << obj._order_id;
   stream << obj._next_entry;
   stream << obj._parent;
   stream << obj._module_next;

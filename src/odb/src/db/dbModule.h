@@ -64,6 +64,7 @@ class _dbModule : public _dbObject
 
   uint _id;
   char* _name;
+  uint _frozen;
   dbId<_dbModule> _next_entry;
   dbId<_dbInst> _insts;
   dbId<_dbModTerm> _modterms;
