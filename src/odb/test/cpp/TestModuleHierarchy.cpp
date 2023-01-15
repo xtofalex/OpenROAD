@@ -90,7 +90,7 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   BOOST_TEST(io1_term->getNet() == i0_net);
   BOOST_TEST(i0_net->getTerms().size() == 2);
 
-  //Freeze module before instantiation
+  // Freeze module before instantiation
   master_mod->setFrozen();
 
   BOOST_TEST(dbModInst::create(parent_mod, master_mod, "i1") != nullptr);
@@ -109,18 +109,12 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   // dbBlock::getModInsts()
   BOOST_TEST(block->getModInsts().size() == 1);
 
-  
   BOOST_TEST(modInst->getITerms().size() == 3);
-  dbModITerm* i0_iterm = modInst->findITerm("i0"); 
+  dbModITerm* i0_iterm = modInst->findITerm("i0");
   BOOST_TEST(i0_iterm != nullptr);
   BOOST_TEST(i0_iterm->getTerm() == i0_term);
   BOOST_TEST(modInst->findITerm("io1") != nullptr);
   BOOST_TEST(modInst->findITerm("o") != nullptr);
-
-
-
-
-
 
   // dbInst <--> dbModule
   auto inst1 = dbInst::create(block, lib->findMaster("and2"), "inst1");

@@ -247,6 +247,7 @@ dbModInst* dbModInst::create(dbModule* parentModule,
   _dbModInst* modinst = block->_modinst_tbl->create();
   modinst->_name = strdup(h_name.c_str());
   ZALLOCATED(modinst->_name);
+  modinst->_modinst_hdr = inst_hdr->getOID();
   modinst->_master = master->getOID();
   modinst->_parent = parent->getOID();
   modinst->_module_next = parent->_modinsts;
