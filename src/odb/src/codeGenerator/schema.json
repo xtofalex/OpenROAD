@@ -204,7 +204,7 @@
         }
       ],
       "constructors":[],
-      "cpp_includes":["dbBlock.h","dbModInst.h","dbModNet.h","dbModInstHdr.h"]
+      "cpp_includes":["dbBlock.h","dbModInst.h","dbModNet.h","dbModInstHdr.h","dbModule.h"]
     },
     {
       "name":"dbModNet",

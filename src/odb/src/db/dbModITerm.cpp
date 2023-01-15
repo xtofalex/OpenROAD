@@ -40,6 +40,7 @@
 #include "dbModInst.h"
 #include "dbModInstHdr.h"
 #include "dbModNet.h"
+#include "dbModule.h"
 #include "dbTable.h"
 #include "dbTable.hpp"
 // User Code Begin Includes
@@ -183,13 +184,9 @@ dbModTerm* dbModITerm::getTerm() const
   _dbBlock* block = (_dbBlock*) iterm->getOwner();
   _dbModInst* inst = block->_modinst_tbl->getPtr(iterm->_inst);
   _dbModInstHdr* inst_hdr = block->_modinst_hdr_tbl->getPtr(inst->_modinst_hdr);
-#if 0
-  _dbDatabase* db = iterm->getDatabase();
-  _dbLib* lib = db->_lib_tbl->getPtr(inst_hdr->_lib);
-  _dbMaster* master = lib->_master_tbl->getPtr(inst_hdr->_master);
-  dbId<_dbMTerm> mterm = inst_hdr->_mterms[iterm->_flags._mterm_idx];
-  return (dbMTerm*) master->_mterm_tbl->getPtr(mterm);
-#endif
+  dbId<_dbModTerm> term = inst_hdr->_modterms[iterm->_flags._modterm_idx];
+  _dbModule* master = block->_module_tbl->getPtr(inst->_master);
+  //return (dbModTerm*) master->_modterm_tbl->getPtr(term);
   return nullptr;
 }
 
