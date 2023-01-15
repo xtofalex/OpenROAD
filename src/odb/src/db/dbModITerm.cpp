@@ -38,6 +38,7 @@
 #include "dbDatabase.h"
 #include "dbDiff.hpp"
 #include "dbModInst.h"
+#include "dbModInstHdr.h"
 #include "dbModNet.h"
 #include "dbTable.h"
 #include "dbTable.hpp"
@@ -176,6 +177,22 @@ dbModInst* dbModITerm::getInst() const
 }
 
 // User Code Begin dbModITermPublicMethods
+dbModTerm* dbModITerm::getTerm() const
+{
+  _dbModITerm* iterm = (_dbModITerm*) this;
+  _dbBlock* block = (_dbBlock*) iterm->getOwner();
+  _dbModInst* inst = block->_modinst_tbl->getPtr(iterm->_inst);
+  _dbModInstHdr* inst_hdr = block->_modinst_hdr_tbl->getPtr(inst->_modinst_hdr);
+#if 0
+  _dbDatabase* db = iterm->getDatabase();
+  _dbLib* lib = db->_lib_tbl->getPtr(inst_hdr->_lib);
+  _dbMaster* master = lib->_master_tbl->getPtr(inst_hdr->_master);
+  dbId<_dbMTerm> mterm = inst_hdr->_mterms[iterm->_flags._mterm_idx];
+  return (dbMTerm*) master->_mterm_tbl->getPtr(mterm);
+#endif
+  return nullptr;
+}
+
 void dbModITerm::connect(dbModNet* net_)
 {
   _dbModITerm* iterm = (_dbModITerm*) this;

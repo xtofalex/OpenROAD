@@ -138,6 +138,7 @@ _dbModule::_dbModule(_dbDatabase* db)
 {
   // User Code Begin Constructor
   _name = 0;
+  _frozen = 0;
   _insts = 0;
   _modterms = 0;
   _modinsts = 0;

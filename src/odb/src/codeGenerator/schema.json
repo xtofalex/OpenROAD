@@ -204,7 +204,7 @@
         }
       ],
       "constructors":[],
-      "cpp_includes":["dbBlock.h","dbModInst.h","dbModNet.h"]
+      "cpp_includes":["dbBlock.h","dbModInst.h","dbModNet.h","dbModInstHdr.h"]
     },
     {
       "name":"dbModNet",
@@ -289,6 +289,11 @@
         {
           "name":"_next_entry",
           "type":"dbId<_dbModInst>",
+          "flags":["no-set","no-get"]
+        },
+        {
+          "name":"_modinst_hdr",
+          "type":"dbId<_dbModInstHdr>",
           "flags":["no-set","no-get"]
         },
         {

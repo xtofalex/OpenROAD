@@ -45,6 +45,7 @@ class dbIStream;
 class dbOStream;
 class dbDiff;
 class _dbDatabase;
+class _dbModInstHdr;
 class _dbModule;
 class _dbGroup;
 // User Code Begin Classes
@@ -61,6 +62,7 @@ class _dbModInst : public _dbObject
 
   char* _name;
   dbId<_dbModInst> _next_entry;
+  dbId<_dbModInstHdr> _modinst_hdr;
   dbId<_dbModule> _parent;
   dbId<_dbModInst> _module_next;
   dbId<_dbModule> _master;

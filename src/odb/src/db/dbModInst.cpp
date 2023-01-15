@@ -60,6 +60,9 @@ bool _dbModInst::operator==(const _dbModInst& rhs) const
   if (_next_entry != rhs._next_entry)
     return false;
 
+  if (_modinst_hdr != rhs._modinst_hdr)
+    return false;
+
   if (_parent != rhs._parent)
     return false;
 
@@ -95,6 +98,7 @@ void _dbModInst::differences(dbDiff& diff,
 
   DIFF_FIELD(_name);
   DIFF_FIELD(_next_entry);
+  DIFF_FIELD(_modinst_hdr);
   DIFF_FIELD(_parent);
   DIFF_FIELD(_module_next);
   DIFF_FIELD(_master);
@@ -109,6 +113,7 @@ void _dbModInst::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_BEGIN
   DIFF_OUT_FIELD(_name);
   DIFF_OUT_FIELD(_next_entry);
+  DIFF_OUT_FIELD(_modinst_hdr);
   DIFF_OUT_FIELD(_parent);
   DIFF_OUT_FIELD(_module_next);
   DIFF_OUT_FIELD(_master);
@@ -134,6 +139,7 @@ _dbModInst::_dbModInst(_dbDatabase* db, const _dbModInst& r)
 {
   _name = r._name;
   _next_entry = r._next_entry;
+  _modinst_hdr = r._modinst_hdr;
   _parent = r._parent;
   _module_next = r._module_next;
   _master = r._master;
@@ -147,6 +153,7 @@ dbIStream& operator>>(dbIStream& stream, _dbModInst& obj)
 {
   stream >> obj._name;
   stream >> obj._next_entry;
+  stream >> obj._modinst_hdr;
   stream >> obj._parent;
   stream >> obj._module_next;
   stream >> obj._master;
@@ -161,6 +168,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbModInst& obj)
 {
   stream << obj._name;
   stream << obj._next_entry;
+  stream << obj._modinst_hdr;
   stream << obj._parent;
   stream << obj._module_next;
   stream << obj._master;

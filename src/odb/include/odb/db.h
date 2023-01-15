@@ -9100,6 +9100,11 @@ class dbModITerm : public dbObject
 
   // User Code Begin dbModITerm
   ///
+  /// Get the master-terminal that this instance-terminal is representing.
+  ///
+  dbModTerm* getTerm() const;
+
+  ///
   /// Connect this iterm to this net.
   ///
   void connect(dbModNet* net);
