@@ -27,7 +27,8 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
 {
   // dbModule::create() Succeed
   BOOST_TEST(dbModule::create(block, "parent_mod") != nullptr);
-  dbModule* master_mod = dbModule::create(block, "master_mod");
+  dbModule* master_mod1 = dbModule::create(block, "master_mod1");
+  dbModule* master_mod2 = dbModule::create(block, "master_mod2");
   // dbModule::create() rejected
   BOOST_TEST(dbModule::create(block, "parent_mod") == nullptr);
   // dbBlock::findModule()
@@ -37,49 +38,61 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   BOOST_TEST(string(parent_mod->getName()) == "parent_mod");
   // dbModInst::create() Succeed
 
-  BOOST_TEST(master_mod->getTerms().empty());
-  BOOST_TEST(master_mod->getNets().empty());
-  BOOST_TEST(master_mod->getInsts().empty());
+  BOOST_TEST(master_mod1->getTerms().empty());
+  BOOST_TEST(master_mod1->getNets().empty());
+  BOOST_TEST(master_mod1->getInsts().empty());
+  BOOST_TEST(master_mod2->getTerms().empty());
+  BOOST_TEST(master_mod2->getNets().empty());
+  BOOST_TEST(master_mod2->getInsts().empty());
 
-  dbModTerm* i0_term = dbModTerm::create(master_mod, "i0", dbIoType::INPUT);
+  dbModTerm* i0_term = dbModTerm::create(master_mod1, "i0", dbIoType::INPUT);
   BOOST_TEST(i0_term != nullptr);
   BOOST_TEST(string(i0_term->getName()) == "i0");
   BOOST_TEST(i0_term->getIoType() == dbIoType::INPUT);
-  BOOST_TEST(i0_term->getParent() == master_mod);
+  BOOST_TEST(i0_term->getParent() == master_mod1);
   BOOST_TEST(i0_term->getNet() == nullptr);
 
-  BOOST_TEST(!master_mod->getTerms().empty());
-  BOOST_TEST(master_mod->getTerms().size() == 1);
-  BOOST_TEST(master_mod->findModTerm("i0") == i0_term);
-  BOOST_TEST(master_mod->findModTerm("io1") == nullptr);
+  BOOST_TEST(!master_mod1->getTerms().empty());
+  BOOST_TEST(master_mod1->getTerms().size() == 1);
+  BOOST_TEST(master_mod1->findModTerm("i0") == i0_term);
+  BOOST_TEST(master_mod1->findModTerm("io1") == nullptr);
 
-  dbModTerm* io1_term = dbModTerm::create(master_mod, "io1", dbIoType::INOUT);
+  dbModTerm* io1_term = dbModTerm::create(master_mod1, "io1", dbIoType::INOUT);
   BOOST_TEST(io1_term != nullptr);
   BOOST_TEST(string(io1_term->getName()) == "io1");
   BOOST_TEST(io1_term->getIoType() == dbIoType::INOUT);
-  BOOST_TEST(io1_term->getParent() == master_mod);
+  BOOST_TEST(io1_term->getParent() == master_mod1);
   BOOST_TEST(io1_term->getNet() == nullptr);
-  BOOST_TEST(master_mod->getTerms().size() == 2);
-  BOOST_TEST(master_mod->findModTerm("io1") == io1_term);
+  BOOST_TEST(master_mod1->getTerms().size() == 2);
+  BOOST_TEST(master_mod1->findModTerm("io1") == io1_term);
 
-  dbModTerm* o_term = dbModTerm::create(master_mod, "o", dbIoType::OUTPUT);
+  dbModTerm* o_term = dbModTerm::create(master_mod1, "o", dbIoType::OUTPUT);
   BOOST_TEST(o_term != nullptr);
   BOOST_TEST(string(o_term->getName()) == "o");
   BOOST_TEST(o_term->getIoType() == dbIoType::OUTPUT);
-  BOOST_TEST(o_term->getParent() == master_mod);
+  BOOST_TEST(o_term->getParent() == master_mod1);
   BOOST_TEST(o_term->getNet() == nullptr);
-  BOOST_TEST(master_mod->getTerms().size() == 3);
-  BOOST_TEST(master_mod->findModTerm("o") == o_term);
+  BOOST_TEST(master_mod1->getTerms().size() == 3);
+  BOOST_TEST(master_mod1->findModTerm("o") == o_term);
 
-  dbModNet* i0_net = dbModNet::create(master_mod, "i0");
+  dbModTerm* mod2_i_term = dbModTerm::create(master_mod2, "i", dbIoType::INPUT);
+  BOOST_TEST(mod2_i_term != nullptr);
+  BOOST_TEST(string(mod2_i_term->getName()) == "i");
+  BOOST_TEST(mod2_i_term->getIoType() == dbIoType::INPUT);
+  BOOST_TEST(mod2_i_term->getParent() == master_mod2);
+  BOOST_TEST(mod2_i_term->getNet() == nullptr);
+  BOOST_TEST(master_mod2->getTerms().size() == 1);
+  BOOST_TEST(master_mod2->findModTerm("i") == mod2_i_term);
+
+  dbModNet* i0_net = dbModNet::create(master_mod1, "i0");
   BOOST_TEST(i0_net != nullptr);
   BOOST_TEST(string(i0_net->getName()) == "i0");
-  BOOST_TEST(i0_net->getParent() == master_mod);
+  BOOST_TEST(i0_net->getParent() == master_mod1);
   BOOST_TEST(i0_net->getTerms().empty());
   BOOST_TEST(i0_net->getTerms().size() == 0);
-  BOOST_TEST(master_mod->getNets().size() == 1);
-  BOOST_TEST(master_mod->findModNet("i0") == i0_net);
-  BOOST_TEST(master_mod->findModNet("i1") == nullptr);
+  BOOST_TEST(master_mod1->getNets().size() == 1);
+  BOOST_TEST(master_mod1->findModNet("i0") == i0_net);
+  BOOST_TEST(master_mod1->findModNet("i1") == nullptr);
 
   i0_term->connect(i0_net);
   BOOST_TEST(i0_term->getNet() == i0_net);
@@ -91,30 +104,55 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   BOOST_TEST(i0_net->getTerms().size() == 2);
 
   // Freeze module before instantiation
-  master_mod->setFrozen();
+  master_mod1->setFrozen();
+  master_mod2->setFrozen();
 
-  BOOST_TEST(dbModInst::create(parent_mod, master_mod, "i1") != nullptr);
+  BOOST_TEST(dbModInst::create(parent_mod, master_mod1, "i1") != nullptr);
   // dbModInst::create() rejected duplicate name
-  BOOST_TEST(dbModInst::create(parent_mod, master_mod, "i1") == nullptr);
+  BOOST_TEST(dbModInst::create(parent_mod, master_mod1, "i1") == nullptr);
   // dbModInst::create() rejected master already has a modinst
-  BOOST_TEST(dbModInst::create(parent_mod, master_mod, "i2") == nullptr);
+  BOOST_TEST(dbModInst::create(parent_mod, master_mod1, "i2") == nullptr);
   // dbModule::findModInst()1
-  dbModInst* modInst = parent_mod->findModInst("i1");
+  dbModInst* mod1Inst = parent_mod->findModInst("i1");
   // dbModule getModInst()
-  BOOST_TEST(master_mod->getModInst() == modInst);
+  BOOST_TEST(master_mod1->getModInst() == mod1Inst);
   // dbModInst::getName()
-  BOOST_TEST(string(modInst->getName()) == "i1");
+  BOOST_TEST(string(mod1Inst->getName()) == "i1");
   // dbModule::getChildren()
   BOOST_TEST(parent_mod->getChildren().size() == 1);
   // dbBlock::getModInsts()
   BOOST_TEST(block->getModInsts().size() == 1);
 
-  BOOST_TEST(modInst->getITerms().size() == 3);
-  dbModITerm* i0_iterm = modInst->findITerm("i0");
+  BOOST_TEST(mod1Inst->getITerms().size() == 3);
+  dbModITerm* i0_iterm = mod1Inst->findITerm("i0");
   BOOST_TEST(i0_iterm != nullptr);
   BOOST_TEST(i0_iterm->getTerm() == i0_term);
-  BOOST_TEST(modInst->findITerm("io1") != nullptr);
-  BOOST_TEST(modInst->findITerm("o") != nullptr);
+
+  dbModITerm* io1_iterm = mod1Inst->findITerm("io1");
+  BOOST_TEST(io1_iterm != nullptr);
+  BOOST_TEST(io1_iterm->getTerm() == io1_term);
+
+  dbModITerm* o_iterm = mod1Inst->findITerm("o");
+  BOOST_TEST(o_iterm != nullptr);
+  BOOST_TEST(o_iterm->getTerm() == o_term);
+
+  BOOST_TEST(dbModInst::create(parent_mod, master_mod2, "i2") != nullptr);
+  dbModInst* mod2Inst = parent_mod->findModInst("i2");
+  BOOST_TEST(mod2Inst->getITerms().size() == 1);
+  BOOST_TEST(master_mod2->getModInst() == mod2Inst);
+  dbModITerm* i2_i_iterm = mod2Inst->findITerm("i");
+  BOOST_TEST(i2_i_iterm != nullptr);
+  BOOST_TEST(i2_i_iterm->getTerm() == mod2_i_term);
+
+  dbModNet* n0_net = dbModNet::create(parent_mod, "n0");
+  BOOST_TEST(n0_net != nullptr);
+  BOOST_TEST(n0_net->getParent() == parent_mod);
+  BOOST_TEST(n0_net->getName() == "n0");
+
+  o_iterm->connect(n0_net);
+  BOOST_TEST(o_iterm->getNet() == n0_net);
+  i2_i_iterm->connect(n0_net);
+
 
   // dbInst <--> dbModule
   auto inst1 = dbInst::create(block, lib->findMaster("and2"), "inst1");

@@ -174,7 +174,7 @@
         {
           "name":"_net",
           "type":"dbId<_dbModNet>",
-          "flags":["no-set","no-get"]
+          "flags":["no-set"]
         },
         {
           "name":"_next_moditerm",
@@ -204,7 +204,7 @@
         }
       ],
       "constructors":[],
-      "cpp_includes":["dbBlock.h","dbModInst.h","dbModNet.h","dbModInstHdr.h","dbModule.h"]
+      "cpp_includes":["dbBlock.h","dbModInst.h","dbModNet.h","dbModInstHdr.h","dbModule.h","dbModTerm.h"]
     },
     {
       "name":"dbModNet",
