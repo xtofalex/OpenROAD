@@ -9095,6 +9095,7 @@ class dbModITerm : public dbObject
  public:
   // User Code Begin dbModITermEnums
   // User Code End dbModITermEnums
+  dbModNet* getNet() const;
 
   dbModInst* getInst() const;
 

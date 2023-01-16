@@ -152,6 +152,8 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   o_iterm->connect(n0_net);
   BOOST_TEST(o_iterm->getNet() == n0_net);
   i2_i_iterm->connect(n0_net);
+  BOOST_TEST(i2_i_iterm->getNet() == n0_net);
+  //BOOST_TEST(n0_net->getITerms().size() == 2);
 
 
   // dbInst <--> dbModule

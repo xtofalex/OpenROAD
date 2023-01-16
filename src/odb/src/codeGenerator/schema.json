@@ -174,7 +174,8 @@
         {
           "name":"_net",
           "type":"dbId<_dbModNet>",
-          "flags":["no-set"]
+          "flags":["no-set"],
+          "parent":"dbBlock"
         },
         {
           "name":"_next_moditerm",

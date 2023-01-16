@@ -169,6 +169,15 @@ _dbModITerm::~_dbModITerm()
 //
 ////////////////////////////////////////////////////////////////////
 
+dbModNet* dbModITerm::getNet() const
+{
+  _dbModITerm* obj = (_dbModITerm*) this;
+  if (obj->_net == 0)
+    return NULL;
+  _dbBlock* par = (_dbBlock*) obj->getOwner();
+  return (dbModNet*) par->_modnet_tbl->getPtr(obj->_net);
+}
+
 dbModInst* dbModITerm::getInst() const
 {
   _dbModITerm* obj = (_dbModITerm*) this;
