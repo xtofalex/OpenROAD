@@ -245,7 +245,7 @@
         }
       ],
       "constructors":[],
-      "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp"]
+      "cpp_includes":["dbBlock.h","dbModule.h","dbHashTable.hpp","dbModNetModTermItr.h","dbModNetModITermItr.h"]
     },
     {
       "name":"dbModInstHdr",
@@ -580,6 +580,15 @@
       "orderReversed": "false",
       "sequential": 0,
       "includes": ["dbModInst.h","dbBlock.h"]
+    },
+    {
+      "name": "dbModNetModITermItr",
+      "parentObject": "dbModITerm",
+      "tableName": "moditerm_tbl",
+      "reversible": "false",
+      "orderReversed": "false",
+      "sequential": 0,
+      "includes": ["dbModNet.h"]
     },
     {
       "name": "dbGroupModInstItr",

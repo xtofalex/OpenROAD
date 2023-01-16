@@ -9135,6 +9135,11 @@ class dbModNet : public dbObject
   dbSet<dbModTerm> getTerms();
 
   ///
+  /// Get all the instance terminals of this net.
+  ///
+  dbSet<dbModITerm> getITerms();
+
+  ///
   /// Get the dbModNet name.
   ///
   std::string getName() const;

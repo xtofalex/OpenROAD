@@ -38,12 +38,12 @@
 #include "dbDatabase.h"
 #include "dbDiff.hpp"
 #include "dbHashTable.hpp"
+#include "dbModNetModITermItr.h"
+#include "dbModNetModTermItr.h"
 #include "dbModule.h"
 #include "dbTable.h"
 #include "dbTable.hpp"
 // User Code Begin Includes
-
-#include "dbModNetModTermItr.h"
 // User Code End Includes
 namespace odb {
 
@@ -214,6 +214,13 @@ dbSet<dbModTerm> dbModNet::getTerms()
   _dbModNet* net = (_dbModNet*) this;
   _dbBlock* block = (_dbBlock*) net->getOwner();
   return dbSet<dbModTerm>(net, block->_modnet_modterm_itr);
+}
+
+dbSet<dbModITerm> dbModNet::getITerms()
+{
+  _dbModNet* net = (_dbModNet*) this;
+  _dbBlock* block = (_dbBlock*) net->getOwner();
+  return dbSet<dbModITerm>(net, block->_modnet_moditerm_itr);
 }
 
 // User Code End dbModNetPublicMethods

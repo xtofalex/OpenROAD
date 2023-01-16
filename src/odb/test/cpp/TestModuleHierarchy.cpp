@@ -149,11 +149,14 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   BOOST_TEST(n0_net->getParent() == parent_mod);
   BOOST_TEST(n0_net->getName() == "n0");
 
+  BOOST_TEST(n0_net->getTerms().empty());
+  BOOST_TEST(n0_net->getITerms().empty());
   o_iterm->connect(n0_net);
   BOOST_TEST(o_iterm->getNet() == n0_net);
+  BOOST_TEST(n0_net->getITerms().size() == 1);
   i2_i_iterm->connect(n0_net);
   BOOST_TEST(i2_i_iterm->getNet() == n0_net);
-  //BOOST_TEST(n0_net->getITerms().size() == 2);
+  BOOST_TEST(n0_net->getITerms().size() == 2);
 
 
   // dbInst <--> dbModule
