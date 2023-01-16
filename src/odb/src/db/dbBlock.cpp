@@ -89,8 +89,8 @@
 #include "dbModInstHdr.h"
 #include "dbModInstModITermItr.h"
 #include "dbModNet.h"
-#include "dbModNetModTermItr.h"
 #include "dbModNetModITermItr.h"
+#include "dbModNetModTermItr.h"
 #include "dbModTerm.h"
 #include "dbModule.h"
 #include "dbModuleInstItr.h"
@@ -379,7 +379,7 @@ _dbBlock::_dbBlock(_dbDatabase* db)
   _module_modinst_itr = new dbModuleModInstItr(_modinst_tbl);
 
   _modnet_modterm_itr = new dbModNetModTermItr(_modterm_tbl);
-  
+
   _modnet_moditerm_itr = new dbModNetModITermItr(_moditerm_tbl);
 
   _modinst_moditerm_itr = new dbModInstModITermItr(_moditerm_tbl);

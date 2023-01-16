@@ -158,7 +158,6 @@ BOOST_FIXTURE_TEST_CASE(test_default, F_DEFAULT)
   BOOST_TEST(i2_i_iterm->getNet() == n0_net);
   BOOST_TEST(n0_net->getITerms().size() == 2);
 
-
   // dbInst <--> dbModule
   auto inst1 = dbInst::create(block, lib->findMaster("and2"), "inst1");
   auto inst2 = dbInst::create(block, lib->findMaster("and2"), "inst2");
