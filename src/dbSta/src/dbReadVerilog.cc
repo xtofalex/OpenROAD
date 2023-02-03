@@ -101,6 +101,8 @@ using sta::Term;
 using utl::Logger;
 using utl::STA;
 
+#define DEBUG 0
+
 dbVerilogNetwork::dbVerilogNetwork() :
   ConcreteNetwork(), db_network_(nullptr)
 {
@@ -223,6 +225,10 @@ Verilog2db::makeBlock()
     for (auto iter = bterms.begin(); iter != bterms.end();) {
       iter = dbBTerm::destroy(iter);
     }
+    auto mod_terms = block_->getModTerms();
+    for (auto iter = mod_terms.begin(); iter != mod_terms.end();) {
+      iter = dbModTerm::destroy(iter);
+    }
     auto mod_nets = block_->getModNets();
     for (auto iter = mod_nets.begin(); iter != mod_nets.end();) {
       iter = dbModNet::destroy(iter);
@@ -273,7 +279,9 @@ Verilog2db::recordBusPortsOrder()
 
 void
 Verilog2db::makeDbModuleTerms(dbModule* module, const Cell* cell) {
+#if DEBUG
   std::cerr << "makeDbModuleTerms: " << module->getName() << " : " << network_->name(cell) << std::endl; 
+#endif
   CellPortIterator* port_iter = network_->portIterator(cell);
   while (port_iter->hasNext()) {
     Port* port = port_iter->next();
@@ -287,11 +295,15 @@ Verilog2db::makeDbModuleTerms(dbModule* module, const Cell* cell) {
       for (int bit = from; bit != end; bit+=incr) {
         std::string port_name_str = std::string(port_name) + '[' + std::to_string(bit) + ']';
         auto term = dbModTerm::create(module, port_name_str.c_str(), io_type);
+#if DEBUG
         std::cerr << "makeDbModuleTerms: " << term->getName() << std::endl; 
+#endif
       }
     } else {
       auto term = dbModTerm::create(module, port_name, io_type);
+#if DEBUG
       std::cerr << "makeDbModuleTerms: " << term->getName() << std::endl; 
+#endif
     }
   }
   delete port_iter;
@@ -299,13 +311,17 @@ Verilog2db::makeDbModuleTerms(dbModule* module, const Cell* cell) {
 
 void
 Verilog2db::makeDbModuleNets(dbModule* module, const Instance* instance) {
+#if DEBUG
   std::cerr << "makeDbModuleNets : " << module->getName() << " instance: " << network_->pathName(instance) << std::endl;
+#endif
   NetIterator* net_iter = network_->netIterator(instance);
   while (net_iter->hasNext()) {
     Net* net = net_iter->next();
     const char* net_name = network_->pathName(net);
     dbModNet* mod_net = dbModNet::create(module, net_name); 
+#if DEBUG
     std::cerr << "makeDbModuleNet: " << mod_net->getName() << std::endl; 
+#endif
     //if (network_->isPower(net))
     //  mod_net->setSigType(odb::dbSigType::POWER);
     //if (network_->isGround(net))
@@ -319,7 +335,9 @@ Verilog2db::makeDbModuleNets(dbModule* module, const Instance* instance) {
     NetTermIterator* term_iter = network_->termIterator(net);
     while (term_iter->hasNext()) {
       Term* term = term_iter->next();
+#if DEBUG
       std::cerr << "Term: " << network_->portName(term) << std::endl;
+#endif
       const char* term_name = network_->portName(term);
       dbModTerm* mod_term = module->findModTerm(term_name);
       if (not term) {
@@ -339,9 +357,13 @@ Verilog2db::makeDbModuleNets(dbModule* module, const Instance* instance) {
     NetPinIterator* pin_iter = network_->pinIterator(net);
     while (pin_iter->hasNext()) {
       Pin* pin = pin_iter->next();
+#if DEBUG
       std::cerr << "Pin " << network_->portName(pin) << std::endl;
+#endif
       Instance* instance = network_->instance(pin);
+#if 0
       std::cerr << "Instance " << network_->pathName(instance) << std::endl;
+#endif
       net_pins.push_back(pin);
     }
     delete pin_iter;
@@ -406,8 +428,10 @@ Verilog2db::makeDbModule(Instance* inst, dbModule* parent)
     makeDbModuleTerms(module, cell);
     //
     dbModInst* modinst = dbModInst::create(parent, module, network_->name(inst));
+#if 0
     std::cerr << "In : " << parent->getName() << std::endl;
     std::cerr << "Created " << modinst->getName() << std::endl;
+#endif
     if (modinst == nullptr) {
       logger_->warn(ORD,
                     1014,

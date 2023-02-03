@@ -229,8 +229,40 @@ dbModTerm* dbModTerm::create(dbModule* parentModule,
   return (dbModTerm*) modterm;
 }
 
-void dbModTerm::destroy(dbModTerm* modterm)
+void dbModTerm::destroy(dbModTerm* modterm_)
 {
+  _dbModTerm* modterm = (_dbModTerm*) modterm_;
+  _dbBlock* block = (_dbBlock*) modterm->getOwner();
+  _dbModule* module = (_dbModule*) modterm_->getParent();
+
+  // unlink from parent start
+  uint id = modterm->getOID();
+  _dbModTerm* prev = NULL;
+  uint cur = module->_modterms;
+  while (cur) {
+    _dbModTerm* c = block->_modterm_tbl->getPtr(cur);
+    if (cur == id) {
+      if (prev == NULL)
+        module->_modterms = modterm->_module_next;
+      else
+        prev->_module_next = modterm->_module_next;
+      break;
+    }
+    prev = c;
+    cur = c->_module_next;
+  }
+
+  block->_modterm_hash.remove(modterm);
+  dbProperty::destroyProperties(modterm);
+  block->_modterm_tbl->destroy(modterm);
+}
+
+dbSet<dbModTerm>::iterator dbModTerm::destroy(dbSet<dbModTerm>::iterator& itr)
+{
+  dbModTerm* modterm = *itr;
+  dbSet<dbModTerm>::iterator next = ++itr;
+  destroy(modterm);
+  return next;
 }
 
 std::string dbModTerm::getName() const

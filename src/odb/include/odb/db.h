@@ -9082,6 +9082,8 @@ class dbModTerm : public dbObject
 
   static void destroy(dbModTerm* modterm);
 
+  static dbSet<dbModTerm>::iterator destroy(dbSet<dbModTerm>::iterator& itr);
+
   ///
   /// Get the dbModTerm name.
   ///
@@ -9147,6 +9149,8 @@ class dbModNet : public dbObject
   static dbModNet* create(dbModule* module, const char* name);
 
   static void destroy(dbModNet* modnet);
+
+  static dbSet<dbModNet>::iterator destroy(dbSet<dbModNet>::iterator& itr);
 
   ///
   /// Get all the terminals of this net.

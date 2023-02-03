@@ -201,8 +201,22 @@ dbModNet* dbModNet::create(dbModule* parentModule, const char* name)
   return (dbModNet*) modnet;
 }
 
-void dbModNet::destroy(dbModNet* modnet)
+void dbModNet::destroy(dbModNet* modnet_)
 {
+  _dbModNet* modnet = (_dbModNet*) modnet_;
+  _dbBlock* block = (_dbBlock*) modnet->getOwner();
+
+  block->_modnet_hash.remove(modnet);
+  dbProperty::destroyProperties(modnet);
+  block->_modnet_tbl->destroy(modnet);
+}
+
+dbSet<dbModNet>::iterator dbModNet::destroy(dbSet<dbModNet>::iterator& itr)
+{
+  dbModNet* modnet = *itr;
+  dbSet<dbModNet>::iterator next = ++itr;
+  destroy(modnet);
+  return next;
 }
 
 std::string dbModNet::getName() const

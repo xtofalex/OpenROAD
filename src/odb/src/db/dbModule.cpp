@@ -406,6 +406,11 @@ void dbModule::destroy(dbModule* module)
     return;
   }
 
+  dbSet<dbModTerm> modterms = module->getTerms();
+  for (auto itr = modterms.begin(); itr != modterms.end();) {
+    itr = dbModTerm::destroy(itr);
+  }
+
   dbSet<dbModInst> modinsts = module->getChildren();
   dbSet<dbModInst>::iterator itr;
   for (itr = modinsts.begin(); itr != modinsts.end();) {
