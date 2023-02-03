@@ -9080,6 +9080,8 @@ class dbModTerm : public dbObject
                            const char* name,
                            dbIoType direction);
 
+  static void destroy(dbModTerm* modterm);
+
   ///
   /// Get the dbModTerm name.
   ///
@@ -9143,6 +9145,8 @@ class dbModNet : public dbObject
 
   // User Code Begin dbModNet
   static dbModNet* create(dbModule* module, const char* name);
+
+  static void destroy(dbModNet* modnet);
 
   ///
   /// Get all the terminals of this net.

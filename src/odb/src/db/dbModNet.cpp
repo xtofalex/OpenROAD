@@ -201,6 +201,10 @@ dbModNet* dbModNet::create(dbModule* parentModule, const char* name)
   return (dbModNet*) modnet;
 }
 
+void dbModNet::destroy(dbModNet* modnet)
+{
+}
+
 std::string dbModNet::getName() const
 {
   _dbModNet* obj = (_dbModNet*) this;

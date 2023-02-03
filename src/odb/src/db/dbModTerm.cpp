@@ -229,6 +229,10 @@ dbModTerm* dbModTerm::create(dbModule* parentModule,
   return (dbModTerm*) modterm;
 }
 
+void dbModTerm::destroy(dbModTerm* modterm)
+{
+}
+
 std::string dbModTerm::getName() const
 {
   _dbModTerm* obj = (_dbModTerm*) this;
