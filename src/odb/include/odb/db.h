@@ -897,9 +897,24 @@ class dbBlock : public dbObject
   dbSet<dbModule> getModules();
 
   ///
+  /// Get the modterms of this block.
+  ///
+  dbSet<dbModTerm> getModTerms();
+
+  ///
+  /// Get the modnets of this block.
+  ///
+  dbSet<dbModNet> getModNets();
+
+  ///
   /// Get the modinsts of this block.
   ///
   dbSet<dbModInst> getModInsts();
+
+  ///
+  /// Get the moditerms of this block.
+  ///
+  dbSet<dbModITerm> getModITerms();
 
   ///
   /// Get the Power Domains of this block.

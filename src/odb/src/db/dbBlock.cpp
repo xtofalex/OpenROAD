@@ -1826,10 +1826,28 @@ dbSet<dbModule> dbBlock::getModules()
   return dbSet<dbModule>(block, block->_module_tbl);
 }
 
+dbSet<dbModTerm> dbBlock::getModTerms()
+{
+  _dbBlock* block = (_dbBlock*) this;
+  return dbSet<dbModTerm>(block, block->_modterm_tbl);
+}
+
+dbSet<dbModNet> dbBlock::getModNets()
+{
+  _dbBlock* block = (_dbBlock*) this;
+  return dbSet<dbModNet>(block, block->_modnet_tbl);
+}
+
 dbSet<dbModInst> dbBlock::getModInsts()
 {
   _dbBlock* block = (_dbBlock*) this;
   return dbSet<dbModInst>(block, block->_modinst_tbl);
+}
+
+dbSet<dbModITerm> dbBlock::getModITerms()
+{
+  _dbBlock* block = (_dbBlock*) this;
+  return dbSet<dbModITerm>(block, block->_moditerm_tbl);
 }
 
 dbSet<dbPowerDomain> dbBlock::getPowerDomains()
