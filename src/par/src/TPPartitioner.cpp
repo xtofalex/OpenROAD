@@ -216,13 +216,13 @@ void TPpartitioner::Partition(const HGraph hgraph,
                               const matrix<float>& max_block_balance,
                               std::vector<int>& solution)
 {
-  const int partitioner = GetPartitionerChoice();
-  if (partitioner == INIT_RANDOM) {
+  const PartitionType partitioner = GetPartitionerChoice();
+  if (partitioner == PartitionType::INIT_RANDOM) {
     RandomPart(hgraph, max_block_balance, solution);
-  } else if (partitioner == INIT_DIRECT_ILP) {
+  } else if (partitioner == PartitionType::INIT_DIRECT_ILP) {
     OptimalPartCplexWarmStart(hgraph, max_block_balance, solution);
     // OptimalPartCplex(hgraph, max_block_balance, solution);
-  } else if (partitioner == INIT_VILE) {
+  } else if (partitioner == PartitionType::INIT_VILE) {
     InitPartVileTwoWay(hgraph, max_block_balance, solution);
   }
 }
@@ -331,6 +331,10 @@ void TPpartitioner::OptimalPartCplexWarmStart(
     const matrix<float>& max_block_balance,
     std::vector<int>& solution)
 {
+  // TODO: This code is disabled as CP-SAT is non-deterministic when
+  // threaded (see https://github.com/google/or-tools/discussions/3275).
+  // This may have some QOR degradation to be quantified.
+  return;
   logger_->report(
       "Optimal ILP-based Partitioning (OR-Tools) with warm-start ...");
   matrix<int> x(num_parts_, std::vector<int>(hgraph->num_vertices_, 0));
