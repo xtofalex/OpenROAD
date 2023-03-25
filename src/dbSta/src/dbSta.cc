@@ -92,6 +92,7 @@ void
 deleteDbSta(sta::dbSta* sta)
 {
   delete sta;
+  sta::Sta::setSta(nullptr);
 }
 
 }  // namespace ord
@@ -434,7 +435,7 @@ dbStaReport::printLine(const char* buffer, size_t length)
     return;
   }
 
-  logger_->report(buffer);
+  logger_->report("{}", buffer);
 }
 
 // Only used by encapsulated Tcl channels, ie puts and command prompt.
@@ -693,7 +694,7 @@ dbStaCbk::inDbBTermCreate(dbBTerm* bterm)
 void
 dbStaCbk::inDbBTermDestroy(dbBTerm* bterm)
 {
-  sta_->deletePinBefore(network_->dbToSta(bterm));
+  sta_->disconnectPin(network_->dbToSta(bterm));
   // sta::NetworkEdit does not support port removal.
 }
 

@@ -99,6 +99,8 @@
 #include "dbModuleModTermItr.h"
 #include "dbNameCache.h"
 #include "dbNet.h"
+#include "dbNetTrack.h"
+#include "dbNetTrackItr.h"
 #include "dbObstruction.h"
 #include "dbPowerDomain.h"
 #include "dbPowerSwitch.h"
@@ -240,6 +242,9 @@ _dbBlock::_dbBlock(_dbDatabase* db)
 
   _guide_tbl = new dbTable<_dbGuide>(
       db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbGuideObj);
+
+  _net_tracks_tbl = new dbTable<_dbNetTrack>(
+      db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbNetTrackObj);
 
   _box_tbl = new dbTable<_dbBox>(
       db, this, (GetObjTbl_t) &_dbBlock::getObjectTable, dbBoxObj, 1024, 10);
@@ -390,6 +395,8 @@ _dbBlock::_dbBlock(_dbDatabase* db)
 
   _guide_itr = new dbGuideItr(_guide_tbl);
 
+  _net_track_itr = new dbNetTrackItr(_net_tracks_tbl);
+
   _group_inst_itr = new dbGroupInstItr(_inst_tbl);
 
   _group_modinst_itr = new dbGroupModInstItr(_modinst_tbl);
@@ -501,6 +508,8 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
 
   _guide_tbl = new dbTable<_dbGuide>(db, this, *block._guide_tbl);
 
+  _net_tracks_tbl = new dbTable<_dbNetTrack>(db, this, *block._net_tracks_tbl);
+
   _box_tbl = new dbTable<_dbBox>(db, this, *block._box_tbl);
 
   _via_tbl = new dbTable<_dbVia>(db, this, *block._via_tbl);
@@ -610,6 +619,8 @@ _dbBlock::_dbBlock(_dbDatabase* db, const _dbBlock& block)
 
   _guide_itr = new dbGuideItr(_guide_tbl);
 
+  _net_track_itr = new dbNetTrackItr(_net_tracks_tbl);
+
   _group_inst_itr = new dbGroupInstItr(_inst_tbl);
 
   _group_modinst_itr = new dbGroupModInstItr(_modinst_tbl);
@@ -662,6 +673,7 @@ _dbBlock::~_dbBlock()
   delete ap_tbl_;
   delete global_connect_tbl_;
   delete _guide_tbl;
+  delete _net_tracks_tbl;
   delete _box_tbl;
   delete _via_tbl;
   delete _gcell_grid_tbl;
@@ -704,6 +716,7 @@ _dbBlock::~_dbBlock()
   delete _region_group_itr;
   delete _group_itr;
   delete _guide_itr;
+  delete _net_track_itr;
   delete _group_inst_itr;
   delete _group_modinst_itr;
   delete _group_power_net_itr;
@@ -853,6 +866,9 @@ dbObjectTable* _dbBlock::getObjectTable(dbObjectType type)
 
     case dbGuideObj:
       return _guide_tbl;
+
+    case dbNetTrackObj:
+      return _net_tracks_tbl;
 
     case dbNetObj:
       return _net_tbl;
@@ -1006,6 +1022,7 @@ dbOStream& operator<<(dbOStream& stream, const _dbBlock& block)
   stream << *block.ap_tbl_;
   stream << *block.global_connect_tbl_;
   stream << *block._guide_tbl;
+  stream << *block._net_tracks_tbl;
   stream << *block._box_tbl;
   stream << *block._via_tbl;
   stream << *block._gcell_grid_tbl;
@@ -1112,6 +1129,9 @@ dbIStream& operator>>(dbIStream& stream, _dbBlock& block)
     stream >> *block.global_connect_tbl_;
   }
   stream >> *block._guide_tbl;
+  if (db->isSchema(db_schema_net_tracks)) {
+    stream >> *block._net_tracks_tbl;
+  }
   stream >> *block._box_tbl;
   stream >> *block._via_tbl;
   stream >> *block._gcell_grid_tbl;
@@ -1360,6 +1380,9 @@ bool _dbBlock::operator==(const _dbBlock& rhs) const
   if (*_guide_tbl != *rhs._guide_tbl)
     return false;
 
+  if (*_net_tracks_tbl != *rhs._net_tracks_tbl)
+    return false;
+
   if (*_box_tbl != *rhs._box_tbl)
     return false;
 
@@ -1503,6 +1526,7 @@ void _dbBlock::differences(dbDiff& diff,
   DIFF_TABLE(ap_tbl_);
   DIFF_TABLE(global_connect_tbl_);
   DIFF_TABLE(_guide_tbl);
+  DIFF_TABLE(_net_tracks_tbl);
   DIFF_TABLE_NO_DEEP(_box_tbl);
   DIFF_TABLE(_via_tbl);
   DIFF_TABLE_NO_DEEP(_gcell_grid_tbl);
@@ -1602,6 +1626,7 @@ void _dbBlock::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_TABLE(ap_tbl_);
   DIFF_OUT_TABLE(global_connect_tbl_);
   DIFF_OUT_TABLE(_guide_tbl);
+  DIFF_OUT_TABLE(_net_tracks_tbl);
   DIFF_OUT_TABLE_NO_DEEP(_box_tbl);
   DIFF_OUT_TABLE(_via_tbl);
   DIFF_OUT_TABLE_NO_DEEP(_gcell_grid_tbl);
@@ -2237,8 +2262,14 @@ Rect dbBlock::getDieArea()
 
 Rect dbBlock::getCoreArea()
 {
-  auto rows = getRows();
-  if (rows.size() > 0) {
+  // filter rows to remove those with site class PAD
+  std::vector<odb::dbRow*> rows;
+  for (dbRow* row : getRows()) {
+    if (row->getSite()->getClass() != odb::dbSiteClass::PAD) {
+      rows.push_back(row);
+    }
+  }
+  if (!rows.empty()) {
     Rect rect;
     rect.mergeInit();
 
@@ -3900,8 +3931,6 @@ int dbBlock::markBackwardsUser2(std::vector<dbInst*>& startingInsts,
   if (startingInsts.size() <= 0)
     return 0;
 
-  // notice(0, ">>> markBackwardsUser2:%d startingInsts    %d resultTable\n",
-  // startingInsts.size(), resultTable.size());
   std::vector<dbInst*>::iterator itr;
   for (itr = startingInsts.begin(); itr != startingInsts.end(); ++itr) {
     dbInst* inst = *itr;
@@ -3958,20 +3987,10 @@ int dbBlock::markBackwardsUser2(std::vector<dbInst*>& startingInsts,
             instsToMark.push_back(faninInst);
         }
       } else if (faninInst->getUserFlag2()) {
-        // notice(0, "<<< -1: markBackwardsUser2:     %d startingInsts    %d
-        // resultTable   %d instsToMark\n", 	startingInsts.size(),
-        // resultTable.size(), instsToMark.size());
         return -1;
       }
-
-      // if (! faninInst->getMaster()->isSequential() && !
-      // faninInst->getUserFlag2()) 	instsToMark.push_back(faninInst);
     }
   }
-  // notice(0, "<<< -1: markBackwardsUser2:     %d startingInsts    %d
-  // resultTable   %d instsToMark\n", 	startingInsts.size(),
-  // resultTable.size(),
-  // instsToMark.size());
   return instsToMark.size();
 }
 
