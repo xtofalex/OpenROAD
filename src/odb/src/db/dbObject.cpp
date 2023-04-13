@@ -332,6 +332,7 @@ void dbObject::getDbName(char name[max_name_length]) const
         break;
       case dbAccessPointObj:
         *cptr++ = 'h';
+        break;
       case dbGuideObj:
         *cptr++ = ';';
         id = impl->getOID();
@@ -357,6 +358,7 @@ void dbObject::getDbName(char name[max_name_length]) const
       case dbTechLayerArraySpacingRuleObj:
       case dbTechLayerWidthTableRuleObj:
       case dbTechLayerAreaRuleObj:
+      case dbTechLayerKeepOutZoneRuleObj:
       case dbTechLayerMinCutRuleObj:
         *cptr++ = 'J';
         id = impl->getOID();
@@ -750,6 +752,7 @@ static const char* name_tbl[] = {"dbDatabase",
                                  "dbNetTrack",
                                  "dbMetalWidthViaMap",
                                  "dbTechLayerAreaRule",
+                                 "dbTechLayerKeepOutZoneRule",
                                  "dbModule",
                                  "dbModTerm",
                                  "dbModITerm",
